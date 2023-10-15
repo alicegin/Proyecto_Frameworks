@@ -12,7 +12,7 @@ def inicio_sesion(request):
         if usuario is None:
             return render(request,'inicio_sesion.html', {
                 'form': AuthenticationForm,
-                'Error': 'Contraseña o usuario inválido'
+                'Error': '<div class="alert alert-danger" role="alert">Contraseña o usuario inválido </div>'
             })
         else:
             login(request,usuario)
