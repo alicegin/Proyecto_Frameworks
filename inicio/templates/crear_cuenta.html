@@ -52,7 +52,7 @@
           <p> Sé parte de esta comunidad</p>
             {%csrf_token%}
             <div class="container d-flex flex-column align-items-center">
-               {{error}}
+               {{error|safe}}
               <input type="text" class="form-control text-center" placeholder="Usuario" aria-label="Usuario" aria-describedby="basic-addon1" name="Usuario">
               <input type="text" class="form-control text-center" placeholder="Correo" aria-label="Correo" aria-describedby="basic-addon2" name="Correo">
               <input type="text" class="form-control text-center" placeholder="Contraseña" aria-label="Contrasena" aria-describedby="basic-addon3" name="Contrasena">
