@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <link rel="stylesheet" href="css/style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <title>Inicio Sesión</title>
+    <style>
+      .form-control{
+        margin-top: 20px;
+        max-width: 300px;
+      }
+      .col, .container{
+        border-radius: 10%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-md"
+    style=
+    "padding:10px 20px 30px 20px;">
+      <div class="row"
+       style=
+       "padding: 0px 20px 30px 20px ;">
+
+       <!------------PARTE IZQUIERDA---------->
+        <div class="col">
+            <div class="container" 
+            style=
+            "background-color: #F27D16;
+            padding: 10%;">
+              <div class="container">
+                <img src="https://i.pinimg.com/564x/5f/ba/50/5fba50fbfa19a3bcb413a067736d95a8.jpg" class="img-fluid">
+              </div>
+            </div>
+        </div>
+        <!------------PARTE DERECHA---------->
+        <div class="col" 
+        style=
+        "background-color: #F2F2F2;
+        box-shadow: 0px 5px 5px 0px gray;">
+        <form name="crear_cuenta" method="POST">
+        <div class="d-flex flex-column align-items-center">
+          <div class="row" style="margin-top: 10px;">
+            <p class="fs-1">
+              GustoViajero!
+            </p>
+          </div>
+          <p> Sé parte de esta comunidad</p>
+            {%csrf_token%}
+            <div class="container d-flex flex-column align-items-center">
+               {{error}}
+              <input type="text" class="form-control text-center" placeholder="Usuario" aria-label="Usuario" aria-describedby="basic-addon1" name="Usuario">
+              <input type="text" class="form-control text-center" placeholder="Correo" aria-label="Correo" aria-describedby="basic-addon2" name="Correo">
+              <input type="text" class="form-control text-center" placeholder="Contraseña" aria-label="Contrasena" aria-describedby="basic-addon3" name="Contrasena">
+            </div>
+            <p style="margin-top:20px ;">
+              ¿Ya tienes una cuenta?
+            </p>
+            <a href="{% url 'inicio_sesion' %}" class="btn btn-link" style="color: #F27D16;">Iniciar Sesión</a>
+            <button type="submit" class="btn btn-light">Aceptar</button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

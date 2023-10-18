@@ -41,7 +41,7 @@
         style=
         "background-color: #F2F2F2;
         box-shadow: 0px 5px 5px 0px gray;">
-        <form action="" method="POST">
+        <form action="/iniciosesion/" name="inicio_sesion" method="POST">
         <div class="d-flex flex-column align-items-center">
           <div class="row" style="margin-top: 10px;">
             <p class="fs-1">
@@ -51,15 +51,15 @@
           <p> Es bueno volverte a ver</p>
             {%csrf_token%}
             <div class="container d-flex flex-column align-items-center">
-                {{error}}
-              <input type="text" class="form-control text-center" placeholder="Usuario" aria-label="Usuario" aria-describedby="basic-addon1">
-              <input type="text" class="form-control text-center" placeholder="Contraseña" aria-label="Contrasena" aria-describedby="basic-addon2">
+                {{error|safe}}
+              <input type="text" class="form-control text-center" placeholder="Usuario" aria-label="Usuario" aria-describedby="basic-addon1" name="Usuario">
+              <input type="text" class="form-control text-center" placeholder="Contraseña" aria-label="Contrasena" aria-describedby="basic-addon2" name="Contrasena">
             </div>
             <p style="margin-top:20px ;">
               ¿No tienes una cuenta?
             </p>
-            <button type="button" class="btn btn-link" style="color: #F27D16;">Crear una cuenta</button>
-            <button type="button" class="btn btn-light">Iniciar</button>
+            <a href="{% url 'crear_cuenta' %}" class="btn btn-link" style="color: #F27D16;">Crear una cuenta</a>
+            <button type="submit" class="btn btn-light">Iniciar</button>
           </div>
         </form>
         </div>
