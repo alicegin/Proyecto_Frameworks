@@ -1,5 +1,40 @@
 <!--Heredar la barra de navegación-->
 {% extends 'base.html' %}
 {% block content%}
-<h1>ESTOY DENTRO</h1>
+<style>
+     .carousel-inner {
+    height: 400px; /* Establece la altura deseada para todas las imágenes */
+    overflow: hidden; /* Oculta cualquier parte que exceda el contenedor */
+  }
+
+  .carousel-inner img {
+    width: 75%; /* Asegura que las imágenes ocupen todo el ancho disponible del contenedor */
+    height: 100%; /* Ocupa toda la altura disponible del contenedor */
+    object-fit: cover; /* Ajusta la imagen al contenedor sin distorsionarla */
+  }
+</style>
+<div id="carouselExample" class="carousel slide">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="https://i.pinimg.com/564x/02/69/44/026944ec391186ce8a5e507c93e2ae71.jpg" class="img-fluid mx-auto d-block " alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="https://i.pinimg.com/564x/87/d4/f4/87d4f4e863605bd5041a47c05d9f0a75.jpg" class="img-fluid mx-auto d-block"alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="https://i.pinimg.com/564x/b0/30/fb/b030fbbe8f265c5984d947680bf211dc.jpg" class="img-fluid mx-auto d-block"alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+<div class="d-flex flex-column align-items-center">
+    <h1 class="">RESEÑAS</h1>
+</div>
 {% endblock %}
