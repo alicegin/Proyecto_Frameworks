@@ -6,16 +6,14 @@ class Project (models.Model):
 
 class TipoCocina(models.Model):
     Nombre=models.CharField(max_length=25)
-    def __str__(self):
-        return self.full_name
+    
     
 class CategoriaL(models.Model):
     Nombre=models.CharField(max_length=30)
-    def __str__(self):
-        return self.full_name
+    
 
 class Restaurante (models.Model):
-    Propietario=models.ForeignKey(User, on_delete=models.CASCADE)
+    Propietario=models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     Pais=models.CharField(max_length=50)
     Estado=models.CharField(max_length=50)
     Direccion=models.CharField(max_length=200)
@@ -25,13 +23,10 @@ class Restaurante (models.Model):
     Apertura=models.TimeField()
     Cierre=models.TimeField()
     Descripción=models.CharField(max_length=280)
-    def __str__(self):
-        return self.full_name
+    
 class FotosLugar(models.Model):
     RestauranteID=models.ForeignKey(Restaurante, on_delete=models.CASCADE)
-    Ruta=models.CharField(max_length=70)
-    def __str__(self):
-        return self.full_name
+    Imagen=models.ImageField(upload_to='uploads/lugar', null=True)
 
 class Resena(models.Model):
     RestauranteID=models.ForeignKey(Restaurante,on_delete=models.CASCADE)
@@ -39,11 +34,7 @@ class Resena(models.Model):
     Fecha=models.DateField()
     Descripcion=models.CharField(max_length=280)
     Puntuacion=models.IntegerField()
-    def __str__(self):
-        return self.full_name
 
 class FotosResena(models.Model):
     ResenaID=models.ForeignKey(Resena,on_delete=models.CASCADE)
-    Ruta=models.CharField(max_length=70)
-    def __str__(self):
-        return self.full_name
+    Imagen=models.ImageField(upload_to='uploads/resena', null=True)
