@@ -1,16 +1,23 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <p class="h1">
     Mis restaurantes
 </p>
     {% if Elementos %}
         {% for Elemento in Elementos %}
-            <div class="row-cols-1">
                 <div class="col d-flex">
                     <div class="col-1">
                         <button type="button" class="btn btn-danger">E</button>
                     </div>
-                    <div class="col-9 ">
+                    <div class="col-9 d-grid align-content-center justify-content-center">
+                            {% if Elemento.fotoslugar_set.all %}
+                                {% for foto in Elemento.fotoslugar_set.all %}
+                                    <img src="{{foto.Imagen.url}}" style="height:200px ;">
+                                {% endfor %}
+                            {% else %}
+                                    <img src="{% static 'images/default.jpg' %}" style="height:200px ;">
+                            {% endif %}
                             <p> {{ Elemento.Nombre }} </p>
                             <p>{{ Elemento.Apertura }} - {{ Elemento.Cierre }}</p>
                             <p>{{ Elemento.Pais }}, {{Elemento.Estado}}</p>
@@ -27,9 +34,8 @@
                         <button type="button" class="btn btn-secondary">Editar</button>
                     </div>
                 </div>
-            </div>
         {% endfor %}
     {% else %}
-
+    <p>No tienes restaurantes creados</p>
     {% endif %}
 {% endblock %}

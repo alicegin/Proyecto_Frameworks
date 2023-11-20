@@ -83,7 +83,6 @@ def crear_restaurante(request):
     
 def mis_restaurantes(request):
     if request.user.is_authenticated:
-        Elementos=Restaurante.objects.filter(Propietario=request.user)
-        Imagenes=FotosLugar.objects.all()
+        Elementos=Restaurante.objects.filter(Propietario=request.user).prefetch_related('fotoslugar_set')
     return render(request, "mis_restaurantes.html",{'Elementos': Elementos})
        
