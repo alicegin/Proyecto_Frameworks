@@ -13,6 +13,7 @@ class CategoriaL(models.Model):
     
 
 class Restaurante (models.Model):
+    Nombre=models.CharField(max_length=50, default='Restaurante')
     Propietario=models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     Pais=models.CharField(max_length=50)
     Estado=models.CharField(max_length=50)
