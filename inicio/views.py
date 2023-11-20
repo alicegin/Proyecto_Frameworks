@@ -5,6 +5,7 @@ from django.contrib.auth import login,logout, authenticate
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
 from .forms import RestauranteForm,FotosLugarForm
+from .models import Restaurante
 # Create your views here.
 def inicio_sesion(request):
     if request.method == 'GET':
@@ -52,10 +53,15 @@ def crear_restaurante(request):
     if request.method =="POST":
         InfoForm =RestauranteForm(request.POST)
         FotoForm=FotosLugarForm(request.POST)
-        if InfoForm.is_valid() and FotoForm.is_valid():
-            InfoForm.save()
-            FotoForm.save()
-            return HttpResponseRedirect('/crearr?submitted=True')
+        if request.user.is_authenticated:
+            propietario = request.user.username
+            if InfoForm.is_valid() and FotoForm.is_valid():
+                restaurante_instance = InfoForm.save(commit=False)
+                restaurante_instance.Propietario = propietario
+                restaurante_instance.save()
+                
+                FotoForm.save()
+                return HttpResponseRedirect('/crearr?submitted=True')
     else:
           InfoForm=RestauranteForm
           FotoForm=FotosLugarForm

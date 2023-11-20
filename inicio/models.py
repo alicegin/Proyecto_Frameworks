@@ -6,10 +6,14 @@ class Project (models.Model):
 
 class TipoCocina(models.Model):
     Nombre=models.CharField(max_length=25)
+    def __str__(self):
+        return self.Nombre
     
     
 class CategoriaL(models.Model):
     Nombre=models.CharField(max_length=30)
+    def __str__(self):
+        return self.Nombre
     
 
 class Restaurante (models.Model):
@@ -18,16 +22,16 @@ class Restaurante (models.Model):
     Pais=models.CharField(max_length=50)
     Estado=models.CharField(max_length=50)
     Direccion=models.CharField(max_length=200)
-    Promedio=models.DecimalField(max_digits=3,decimal_places=3, default=0)
-    TipoCocina=models.ForeignKey(TipoCocina,on_delete=models.CASCADE)
-    CategoriaL=models.ForeignKey(CategoriaL,on_delete=models.CASCADE)
+    Promedio=models.DecimalField(max_digits=3,decimal_places=2, default=0, blank=True)
+    TipoCocina=models.ForeignKey(TipoCocina,on_delete=models.CASCADE, blank=True, null=True)
+    CategoriaL=models.ForeignKey(CategoriaL,on_delete=models.CASCADE, blank=True, null=True)
     Apertura=models.TimeField()
     Cierre=models.TimeField()
-    Descripción=models.CharField(max_length=280)
+    Descripción=models.CharField(max_length=280, null=True, blank=True)
     
 class FotosLugar(models.Model):
     RestauranteID=models.ForeignKey(Restaurante, on_delete=models.CASCADE)
-    Imagen=models.ImageField(upload_to='uploads/lugar', null=True)
+    Imagen=models.ImageField(upload_to='uploads/lugar', blank=True, null=True)
 
 class Resena(models.Model):
     RestauranteID=models.ForeignKey(Restaurante,on_delete=models.CASCADE)
@@ -38,4 +42,4 @@ class Resena(models.Model):
 
 class FotosResena(models.Model):
     ResenaID=models.ForeignKey(Resena,on_delete=models.CASCADE)
-    Imagen=models.ImageField(upload_to='uploads/resena', null=True)
+    Imagen=models.ImageField(upload_to='uploads/resena', null=True, blank=True)

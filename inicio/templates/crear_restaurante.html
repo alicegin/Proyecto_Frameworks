@@ -1,14 +1,75 @@
 {% extends 'base.html' %}
 {% block content %}
-<form action="" method="POST"></form>
+<form action="" method="POST" enctype="multipart/form-data"></form>
 {% csrf_token %}
   <div class="container text-center">
       <div class="row align-items-start">
-        <div class="col-4" style="background-color: brown;">
-          {{FotoForm.as_p}}
+        <div class="col-4">
+          <div class="row">
+            {{FotoForm.Imagen.label_tag}}
+          </div>
+          <div class="row">
+            {{FotoForm.Imagen}}
+          </div>
+          
         </div>
-        <div class="col-8" style="background-color: blue;">
-              {{InfoForm.as_p}}
+        <div class="col-8">
+          <div class="row">
+            <div class="col-9">
+              {{InfoForm.Nombre.label_tag}}
+              {{InfoForm.Nombre}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {{InfoForm.Pais.label_tag}}
+              {{InfoForm.Pais}}
+            </div>
+            <div class="col">
+              {{InfoForm.Estado.label_tag}}
+              {{InfoForm.Estado}}
+            </div>
+          </div>
+          <div class="row">
+              {{InfoForm.Direccion.label_tag}}
+              {{InfoForm.Direccion}}
+          </div>
+          <div class="row">
+            <div class="col">
+              {{InfoForm.TipoCocina.label_tag}}
+              {{InfoForm.TipoCocina}}
+            </div>
+            <div class="col">
+              {{InfoForm.CategoriaL.label_tag}}
+              {{InfoForm.CategoriaL}}
+            </div>
+          </div>
+          <div class="row">
+            <p class="h6" style="margin-top: 20px;">
+              HORARIO
+            </p>
+            <div class="col">
+              {{InfoForm.Apertura.label_tag}}
+              {{InfoForm.Apertura}}
+            </div>
+            <div class="col">
+              {{InfoForm.Cierre.label_tag}}
+              {{InfoForm.Cierre}}
+            </div>
+          </div>
+          <div class="row">
+              {{InfoForm.Descripción.label_tag}}
+              {{InfoForm.Descripción}}
+          </div>
+          <div class="row">
+            <div class="col">
+            <button type="submit" class="btn btn-light">Aceptar</button>
+            </div>
+            <div class="col">
+              <a href="{% url 'home' %}" class="btn btn-light" style="color: #F27D16;">Cancelar</a>
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>
