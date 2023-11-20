@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<p class="h1">
+    Mis restaurantes
+</p>
+    {% if Elementos %}
+        {% for Elemento in Elementos %}
+            <div class="row-cols-1">
+                <div class="col d-flex">
+                    <div class="col-1">
+                        <button type="button" class="btn btn-danger">E</button>
+                    </div>
+                    <div class="col-9 ">
+                            <p> {{ Elemento.Nombre }} </p>
+                            <p>{{ Elemento.Apertura }} - {{ Elemento.Cierre }}</p>
+                            <p>{{ Elemento.Pais }}, {{Elemento.Estado}}</p>
+                            <p>{{Elemento.Direccion}}</p>
+                            {% if Elemento.CategoriaL %}
+                                <p>CategoriaL</p>
+                            {% endif %}
+                            {% if Elemento.TipoCocina %}
+                                <p>TipoCocina</p>
+                            {% endif %}
+                            
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-secondary">Editar</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+
+    {% endif %}
+{% endblock %}

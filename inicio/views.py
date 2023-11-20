@@ -80,4 +80,10 @@ def crear_restaurante(request):
     else:
         # Manejar el caso en que el usuario no esté autenticado (puedes redirigirlo o mostrar un mensaje)
         return render(request, 'error.html', {'mensaje': 'Acceso no autorizado'})
+    
+def mis_restaurantes(request):
+    if request.user.is_authenticated:
+        Elementos=Restaurante.objects.filter(Propietario=request.user)
+        Imagenes=FotosLugar.objects.all()
+    return render(request, "mis_restaurantes.html",{'Elementos': Elementos})
        
