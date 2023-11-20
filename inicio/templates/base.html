@@ -23,7 +23,7 @@
               <a class="nav-link" aria-current="page" href="#">Explorar</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="#">Crear reseña</a>
+              <a class="nav-link" aria-current="page" href="{% url 'crear_restaurante' %}">Crear reseña</a>
             </li>
           </ul>
         </div>
@@ -51,7 +51,9 @@
         </div>
       </div>
     </nav>
+    <div class="vh-100 d-flex flex-column justify-content-center align-items-center">
     {% block content %}
     {% endblock %}
+  </div>
   </body>
 </html>

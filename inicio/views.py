@@ -45,4 +45,7 @@ def crear_cuenta(request):
             'form': UserCreationForm,
             'error': '<div class="alert alert-danger" role="alert">El usuario ya existe. Intente con uno nuevo. </div>'
         })
+
+def crear_restaurante(request):
+    return render(request,'crear_restaurante.html')
        
