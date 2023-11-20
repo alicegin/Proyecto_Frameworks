@@ -28,9 +28,21 @@ class Restaurante (models.Model):
     Apertura=models.TimeField()
     Cierre=models.TimeField()
     Descripción=models.CharField(max_length=280, null=True, blank=True)
+    def __str__(self):
+        return (f"{self.Nombre}"
+        f" - Propietario: {self.Propietario.username}" 
+        f" - Promedio: {self.Promedio}"
+        f" - País: {self.Pais}"
+        f" - Estado: {self.Estado}"
+        f" - Dirección: {self.Direccion}"
+        f" - TipoCocina: {self.TipoCocina}"
+        f" - CategoriaL: {self.CategoriaL}"
+        f" - Apertura: {self.Apertura}"
+        f" - Cierre: {self.Cierre}"
+        f" - Descripción: {self.Descripción}")
     
 class FotosLugar(models.Model):
-    RestauranteID=models.ForeignKey(Restaurante, on_delete=models.CASCADE)
+    RestauranteID=models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True)
     Imagen=models.ImageField(upload_to='uploads/lugar', blank=True, null=True)
 
 class Resena(models.Model):

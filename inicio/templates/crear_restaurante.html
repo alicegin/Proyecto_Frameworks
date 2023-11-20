@@ -1,15 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
-<form action="" method="POST" enctype="multipart/form-data"></form>
+{% if messages %}
+      {% for message in messages %}
+        <div{% if message.tags %} class="alert alert-info" role="alert"{% endif %}>{{ message }}
+          <a href="{% url 'home' %}" class="btn btn-light" style="color: #F27D16;">Ver mis restaurantes</a>
+        </div>
+
+      {% endfor %}
+  {% endif %}
+<form action="" method="POST" enctype="multipart/form-data">
 {% csrf_token %}
   <div class="container text-center">
       <div class="row align-items-start">
         <div class="col-4">
           <div class="row">
-            {{FotoForm.Imagen.label_tag}}
+            {{ FotoForm.Imagen.label_tag }}
           </div>
           <div class="row">
-            {{FotoForm.Imagen}}
+            <input type="file" name="{{ FotoForm.Imagen.name }}" id="{{ FotoForm.Imagen.id_for_label }}" multiple>
           </div>
           
         </div>

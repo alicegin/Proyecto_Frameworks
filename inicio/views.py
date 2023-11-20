@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout, authenticate
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
 from .forms import RestauranteForm,FotosLugarForm
-from .models import Restaurante
+from .models import Restaurante,FotosLugar
 # Create your views here.
 def inicio_sesion(request):
     if request.method == 'GET':
@@ -49,23 +50,34 @@ def crear_cuenta(request):
         })
 
 def crear_restaurante(request):
-    submitted=False
-    if request.method =="POST":
-        InfoForm =RestauranteForm(request.POST)
-        FotoForm=FotosLugarForm(request.POST)
-        if request.user.is_authenticated:
-            propietario = request.user.username
-            if InfoForm.is_valid() and FotoForm.is_valid():
-                restaurante_instance = InfoForm.save(commit=False)
-                restaurante_instance.Propietario = propietario
-                restaurante_instance.save()
-                
-                FotoForm.save()
-                return HttpResponseRedirect('/crearr?submitted=True')
+    submitted = False
+
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            InfoForm = RestauranteForm(request.POST)
+            FotoForm = FotosLugarForm(request.POST)
+
+            if InfoForm.is_valid():
+                restaurante = InfoForm.save(commit=False)
+                restaurante.Propietario = request.user
+                restaurante.save()
+
+                if 'Imagen' in request.FILES:
+                    for imagen in request.FILES.getlist('Imagen'):
+                        FotosLugar.objects.create(RestauranteID=restaurante, Imagen=imagen)
+
+
+                messages.success(request, ("El restaurante fue creado"))
+                return HttpResponseRedirect('/crearrestaurante?submitted=True')
+        else:
+            InfoForm = RestauranteForm()
+            FotoForm = FotosLugarForm()
+
+            if 'submitted' in request.GET:
+                submitted = True
+
+        return render(request, 'crear_restaurante.html', {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'submitted': submitted})
     else:
-          InfoForm=RestauranteForm
-          FotoForm=FotosLugarForm
-          if 'submitted' in request.GET:
-              submitted=True
-    return render(request,'crear_restaurante.html',{'InfoForm': InfoForm, 'FotoForm':FotoForm, 'submitted':submitted})
+        # Manejar el caso en que el usuario no esté autenticado (puedes redirigirlo o mostrar un mensaje)
+        return render(request, 'error.html', {'mensaje': 'Acceso no autorizado'})
        
