@@ -18,7 +18,7 @@ class Restaurante (models.Model):
     Estado=models.CharField(max_length=50)
     Direccion=models.CharField(max_length=200)
     Promedio=models.DecimalField(max_digits=3,decimal_places=3, default=0)
-    TipoCocinaID=models.ForeignKey(TipoCocina,on_delete=models.CASCADE)
+    TipoCocina=models.ForeignKey(TipoCocina,on_delete=models.CASCADE)
     CategoriaL=models.ForeignKey(CategoriaL,on_delete=models.CASCADE)
     Apertura=models.TimeField()
     Cierre=models.TimeField()
