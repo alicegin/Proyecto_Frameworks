@@ -6,7 +6,10 @@
         One of three columns
       </div>
       <div class="col-8" style="background-color: blue;">
-        One of three columns
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+        </form>
       </div>
       
     </div>

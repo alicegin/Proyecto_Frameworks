@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout, authenticate
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.db import IntegrityError
+from .forms import RestauranteForm
 # Create your views here.
 def inicio_sesion(request):
     if request.method == 'GET':
@@ -47,5 +48,15 @@ def crear_cuenta(request):
         })
 
 def crear_restaurante(request):
-    return render(request,'crear_restaurante.html')
+    submitted=False
+    if request.method =="POST":
+        InfoForm =RestauranteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/crearr?submitted=True')
+    else:
+          form=RestauranteForm
+          if 'submitted' in request.GET:
+              submitted=True
+    return render(request,'crear_restaurante.html',{'InfoForm': InfoForm, 'submitted':submitted})
        
