@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout, authenticate
@@ -85,4 +86,14 @@ def mis_restaurantes(request):
     if request.user.is_authenticated:
         Elementos=Restaurante.objects.filter(Propietario=request.user).prefetch_related('fotoslugar_set')
     return render(request, "mis_restaurantes.html",{'Elementos': Elementos})
+
+def eliminar_restaurante(request,pk):
+    if request.user.is_authenticated:
+        restaurante=get_object_or_404(Restaurante,id=pk)
+        if request.user.username== restaurante.Propietario.username:
+            restaurante.delete()
+            messages.success(request,"El restaurante ha sido eliminado")
+            return redirect(request.META.get("HTTP_REFERER"))
+        else:
+            return redirect(request.META.get("HTTP_REFERER"))
        

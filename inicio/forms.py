@@ -15,7 +15,7 @@ class RestauranteForm(forms.ModelForm):
             'Direccion': forms.TextInput(attrs={'class': 'form-control'}),
             'Apertura': forms.TimeInput(format='%H:%M', attrs={'class': 'form-control'}),
             'Cierre': forms.TimeInput(format='%H:%M', attrs={'class': 'form-control'}),
-            'Descripción': forms.TextInput(attrs={'class': 'form-control'}),
+            'Descripción': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
 class FotosLugarForm(forms.ModelForm):
