@@ -17,7 +17,10 @@
             {{ FotoForm.Imagen.label_tag }}
           </div>
           <div class="row">
+            {{ FotoForm.management_form }}
+            {% for form in FotoForm %}
             <input type="file" name="{{ FotoForm.Imagen.name }}" id="{{ FotoForm.Imagen.id_for_label }}" multiple>
+            {% endfor %}
           </div>
           
         </div>

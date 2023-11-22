@@ -96,4 +96,27 @@ def eliminar_restaurante(request,pk):
             return redirect(request.META.get("HTTP_REFERER"))
         else:
             return redirect(request.META.get("HTTP_REFERER"))
-       
+
+def editar_restaurante(request, pk):
+    restaurante = get_object_or_404(Restaurante, id=pk)
+    
+    # Verificar si hay fotos asociadas al restaurante
+    foto = FotosLugar.objects.filter(RestauranteID=restaurante.id).first()
+
+    InfoForm = RestauranteForm(request.POST or None, instance=restaurante)
+    FotoForm = FotosLugarForm(request.POST or None, request.FILES or None, instance=foto)
+
+    if request.method == 'POST':
+        if InfoForm.is_valid() and FotoForm.is_valid():
+            restaurante = InfoForm.save(commit=False)
+            restaurante.Propietario = request.user
+            restaurante.save()
+
+            if 'Imagen' in request.FILES:
+                for imagen in request.FILES.getlist('Imagen'):
+                    FotosLugar.objects.create(RestauranteID=restaurante, Imagen=imagen)
+                
+            messages.success(request, "El restaurante fue actualizado")
+            return redirect('mis_restaurantes')
+
+    return render(request, "editar_restaurante.html", {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'restaurante': restaurante, 'foto': foto})

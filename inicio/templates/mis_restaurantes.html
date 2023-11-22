@@ -1,52 +1,85 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<style>
+  .restaurante:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }
+
+  .restaurantes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .restaurante-card {
+    background-color: bisque;
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    position: relative;
+  }
+
+  .restaurante-card img {
+    width: 100%;
+    height: auto;
+  }
+
+  .restaurante-options {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 5px;
+  }
+</style>
+
 <p class="h1">
     Mis restaurantes
 </p>
 {% if messages %}
-      {% for message in messages %}
+    {% for message in messages %}
         <div{% if message.tags %} class="alert alert-info" role="alert"{% endif %}>{{ message }}
         </div>
+    {% endfor %}
+{% endif %}
 
-      {% endfor %}
-  {% endif %}
-<div class="row">
+<div class="restaurantes-container">
     {% if Elementos %}
         {% for Elemento in Elementos %}
-            <div class="col">
-                <div class="d-flex">
-                    <div class="col-1">
-                        <a href="{% url 'eliminar_restaurante' Elemento.id %}" class="btn btn-danger">E</a>
+            <div class="restaurante-card restaurante">
+                <a href="{% url 'editar_restaurante' Elemento.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="restaurante-options">
+                        <a href="{% url 'eliminar_restaurante' Elemento.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+                        <a href="{% url 'editar_restaurante' Elemento.id %}" class="btn btn-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
                     </div>
-                    <div class="col-9 d-grid align-content-center justify-content-center">
+                    <div style="width: 100%; height: 150px; overflow: hidden; margin: 0 auto;">
                         {% if Elemento.fotoslugar_set.all %}
-                            {% for foto in Elemento.fotoslugar_set.all %}
-                                <img src="{{foto.Imagen.url}}" style="height:200px;">
-                            {% endfor %}
+                            <img src="{{ Elemento.fotoslugar_set.all.0.Imagen.url }}" alt="{{ Elemento.Nombre }}">
                         {% else %}
-                            <img src="{% static 'images/default-perfil.jpg' %}" style="height:200px;">
-                        {% endif %}
-                        <p>{{ Elemento.Nombre }}</p>
-                        <p>{{ Elemento.Apertura }} - {{ Elemento.Cierre }}</p>
-                        <p>{{ Elemento.Pais }}, {{Elemento.Estado}}</p>
-                        <p>{{Elemento.Direccion}}</p>
-                        {% if Elemento.CategoriaL %}
-                            <p>{{Elemento.CategoriaL}}</p>
-                        {% endif %}
-                        {% if Elemento.TipoCocina %}
-                            <p>{{Elemento.TipoCocina}}</p>
+                            <img src="{% static 'images/default.jpg' %}" alt="{{ Elemento.Nombre }}">
                         {% endif %}
                     </div>
-                    <div class="col-2">
-                        <button type="button" class="btn btn-secondary">Editar</button>
-                    </div>
-                </div>
+                    <p>{{ Elemento.Nombre }}</p>
+                    <p>{{ Elemento.Apertura }} - {{ Elemento.Cierre }}</p>
+                    <p>{{ Elemento.Pais }}, {{ Elemento.Estado }}</p>
+                    <p>{{ Elemento.Direccion }}</p>
+                    {% if Elemento.CategoriaL %}
+                        <p>{{ Elemento.CategoriaL }}</p>
+                    {% endif %}
+                    {% if Elemento.TipoCocina %}
+                        <p>{{ Elemento.TipoCocina }}</p>
+                    {% endif %}
+                </a>
             </div>
         {% endfor %}
     {% else %}
-        <p>No tienes restaurantes</p>
-        <a href="{% url 'crear_restaurante' %}" class="btn btn-light" style="color: #F27D16;">Crear restaurante</a>
+        <div class="col-md-8 text-center">
+            <p>No tienes restaurantes</p>
+            <a href="{% url 'crear_restaurante' %}" class="btn btn-light" style="color: #F27D16;">Crear restaurante</a>
+        </div>
     {% endif %}
 </div>
 {% endblock %}
