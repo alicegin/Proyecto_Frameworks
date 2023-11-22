@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container d-block">
+    <div class="col-5">
+
+    </div>
+    <div class="col-7">
+        <div class="container">
+            <!--InfoGenerar de gusto viajero-->
+            <h1>Mi perfil</h1>
+        </div>
+        <div class="container">
+            <!--Foto-->
+            <div class="container">
+                {% if usuario.foto %}
+                <img src="{{usuario.foto.Imagen.url}}" class="rounded-5">
+                {% else %}
+                    <img src="{% static 'images/default-perfil.jpg' %}" alt="{{ usuario.USERNAME }}">
+                {% endif %}
+            </div>
+        </div>
+        <div class="container">
+            <!--Nombre y apellido de usuario-->
+
+        </div>
+        <div class="container">
+            <!--Nombre de usuario y correo-->
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

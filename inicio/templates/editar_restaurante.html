@@ -19,6 +19,16 @@
                 <div class="row">
                     <input type="file" name="{{ FotoForm.Imagen.name }}" id="{{ FotoForm.Imagen.id_for_label }}" multiple>
                 </div>
+                <div class="container mt-4">
+                  <div class="row">
+                      {% for foto in fotos %}
+                          <div class="col-3 mb-3">
+                              <img src="{{ foto.Imagen.url }}" alt="Imagen de restaurante" class="img-fluid">
+                              <a href="{% url 'eliminar_imagen_res' foto.id%}" class="btn btn-light" style="color: #F27D16;"><i class="fa-solid fa-trash"></i></a>
+                          </div>
+                      {% endfor %}
+                  </div>
+              </div>
             </div>
             <div class="col-8">
                 <div class="row">

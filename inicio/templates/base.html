@@ -50,12 +50,12 @@
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://i.pinimg.com/564x/9e/fa/9a/9efa9a384ca00ca3e03de7b4ac739e0d.jpg" width="40" height="40" style="border-radius: 50%;">
+                <img src="{% static 'images/default-perfil.jpg' %}" width="40" height="40" style="border-radius: 50%;">
               </a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{% url 'mis_restaurantes' %}">Mis restaurantes</a></li>
                 <li><a class="dropdown-item" href="#">Mis reseñas</a></li>
-                <li><a class="dropdown-item" href="{% url 'mis_restaurantes' %}">Mi cuenta</a></li>
+                <li><a class="dropdown-item" href="{% url 'mi_cuenta' %}">Mi cuenta</a></li>
                 <li><a class="dropdown-item" href="{% url 'cerrar_sesion' %}">Salir</a></li>
               </ul>
             </li>

@@ -99,12 +99,12 @@ def eliminar_restaurante(request,pk):
 
 def editar_restaurante(request, pk):
     restaurante = get_object_or_404(Restaurante, id=pk)
-    
-    # Verificar si hay fotos asociadas al restaurante
-    foto = FotosLugar.objects.filter(RestauranteID=restaurante.id).first()
+
+    # Obtener todas las fotos asociadas al restaurante
+    fotos = FotosLugar.objects.filter(RestauranteID=restaurante.id)
 
     InfoForm = RestauranteForm(request.POST or None, instance=restaurante)
-    FotoForm = FotosLugarForm(request.POST or None, request.FILES or None, instance=foto)
+    FotoForm = FotosLugarForm(request.POST or None, request.FILES or None)
 
     if request.method == 'POST':
         if InfoForm.is_valid() and FotoForm.is_valid():
@@ -112,11 +112,24 @@ def editar_restaurante(request, pk):
             restaurante.Propietario = request.user
             restaurante.save()
 
-            if 'Imagen' in request.FILES:
-                for imagen in request.FILES.getlist('Imagen'):
-                    FotosLugar.objects.create(RestauranteID=restaurante, Imagen=imagen)
-                
+            # Eliminar fotos existentes del restaurante
+            #FotosLugar.objects.filter(RestauranteID=restaurante.id).delete()
+
+            # Guardar las nuevas fotos
+            for imagen in request.FILES.getlist('Imagen'):
+                FotosLugar.objects.create(RestauranteID=restaurante, Imagen=imagen)
+
             messages.success(request, "El restaurante fue actualizado")
             return redirect('mis_restaurantes')
 
-    return render(request, "editar_restaurante.html", {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'restaurante': restaurante, 'foto': foto})
+    return render(request, "editar_restaurante.html", {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'restaurante': restaurante, 'fotos': fotos})
+
+def eliminar_imagen_res(request, pk):
+    foto = get_object_or_404(FotosLugar, id=pk)
+    foto.delete()
+    return redirect(request.META.get("HTTP_REFERER"))
+
+def mi_cuenta(request):
+    if request.user.is_authenticated:
+        usuario=User.objects.filter(username=request.user.username).prefetch_related('foto')
+        return render(request,"mi_cuenta.html")
