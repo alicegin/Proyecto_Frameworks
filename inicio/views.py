@@ -30,7 +30,10 @@ def cerrar_sesion(request):
     return redirect("inicio_sesion")
     
 def home(request):
-    return render(request,'home.html')
+    if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        return render(request,'home.html',{'usuario':usuario,'foto':foto})
 
 def crear_cuenta(request):
     if request.method=='GET':
@@ -54,6 +57,8 @@ def crear_restaurante(request):
     submitted = False
 
     if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
         if request.method == 'POST':
             InfoForm = RestauranteForm(request.POST)
             FotoForm = FotosLugarForm(request.POST)
@@ -77,15 +82,18 @@ def crear_restaurante(request):
             if 'submitted' in request.GET:
                 submitted = True
 
-        return render(request, 'crear_restaurante.html', {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'submitted': submitted})
+        return render(request, 'crear_restaurante.html', {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'submitted': submitted, 'usuario':usuario,'foto':foto})
     else:
         # Manejar el caso en que el usuario no esté autenticado (puedes redirigirlo o mostrar un mensaje)
         return render(request, 'error.html', {'mensaje': 'Acceso no autorizado'})
     
 def mis_restaurantes(request):
     if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        
         Elementos=Restaurante.objects.filter(Propietario=request.user).prefetch_related('fotoslugar_set')
-    return render(request, "mis_restaurantes.html",{'Elementos': Elementos})
+    return render(request, "mis_restaurantes.html",{'Elementos': Elementos, 'usuario':usuario,'foto':foto})
 
 def eliminar_restaurante(request,pk):
     if request.user.is_authenticated:
@@ -99,6 +107,8 @@ def eliminar_restaurante(request,pk):
 
 def editar_restaurante(request, pk):
     if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
         restaurante=get_object_or_404(Restaurante,id=pk)
         if request.user.username== restaurante.Propietario.username:
     # Obtener todas las fotos asociadas al restaurante
@@ -123,7 +133,7 @@ def editar_restaurante(request, pk):
                     messages.success(request, "El restaurante fue actualizado")
                     return redirect('mis_restaurantes')
 
-            return render(request, "editar_restaurante.html", {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'restaurante': restaurante, 'fotos': fotos})
+            return render(request, "editar_restaurante.html", {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'restaurante': restaurante, 'fotos': fotos,'usuario':usuario,'foto':foto})
 
 def eliminar_imagen_res(request, pk):
     foto = get_object_or_404(FotosLugar, id=pk)
@@ -136,9 +146,11 @@ def mi_cuenta(request):
         foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
 
         if request.method == 'GET':
-            return render(request, "mi_cuenta.html", {'usuario': usuario, 'foto': foto})
+            FotoForm = FotoUsuarioForm()
+            return render(request, "mi_cuenta.html", {'usuario': usuario, 'foto': foto, 'FotoForm': FotoForm})
         elif request.method == 'POST':
             try:
+                FotoForm = FotoUsuarioForm(request.POST)
                 usuario.first_name = request.POST['Nombre']
                 usuario.last_name = request.POST['Apellido']
                 usuario.username = request.POST['Username']
@@ -146,15 +158,15 @@ def mi_cuenta(request):
                 usuario.save()
 
                 # Manejar la foto si se está cargando una nueva
-                if 'imagen' in request.FILES:
-                    foto.imagen = request.FILES['imagen']
+                if request.FILES.get('archivo'):
+                    if foto is None:
+                        foto = FotoUsuario(UsuarioID=usuario)  # Crea un nuevo objeto si no existe
+                    foto.Imagen = request.FILES.get('archivo')
                     foto.save()
 
-                return render(request, "mi_cuenta.html", {'usuario': usuario, 'foto': foto})
+                return render(request, "mi_cuenta.html", {'usuario': usuario, 'foto': foto, 'FotoForm': FotoForm})
             except IntegrityError:
                 return render(request, 'mi_cuenta.html', {
                     'usuario': usuario, 'foto': foto,
                     'error': '<div class="alert alert-danger" role="alert">El usuario ya existe. Intente con uno nuevo. </div>'
                 })
-
-        

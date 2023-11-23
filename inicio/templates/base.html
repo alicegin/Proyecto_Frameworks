@@ -42,7 +42,7 @@
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <form class="d-flex" role="search">
             <input class="form-control me-2" type="search" placeholder="Restaurante" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Buscar</button>
+            <button class="btn btn-outline-light" type="submit">Buscar</button>
           </form>
           </ul>
         </div>
@@ -50,7 +50,11 @@
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if foto %}
+                <img src="{{foto.Imagen.url}}" width="40" height="40" style="border-radius: 50%;">
+                {% else %}
                 <img src="{% static 'images/default-perfil.jpg' %}" width="40" height="40" style="border-radius: 50%;">
+                {% endif %}
               </a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{% url 'mis_restaurantes' %}">Mis restaurantes</a></li>

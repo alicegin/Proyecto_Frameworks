@@ -4,7 +4,7 @@
 <div class="container d-flex justify-content-center" style="padding-top: 20px;">
     <h1>Mi perfil</h1>
 </div>
-<form action="" method="POST">
+<form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="container d-flex">
         <div class="col-3 d-flex">
@@ -32,13 +32,16 @@
                 <!--Foto-->
                 <div style="width: 130px; height: 130px;" >
                         {% if foto %}
-                        <img src="{{foto.Imagen.url}}" style="object-fit: cover; width: 100%; height: 100%;">
+                        <img src="{{foto.Imagen.url}}" style="object-fit: cover; width: 100%; height: 100%;" class="rounded-circle">
                         {% else %}
-                        <img src="{% static 'images/default-perfil.jpg' %}" alt="{{ usuario.username}}" style="object-fit: cover; width: 100%; height: 100%;" class="rounded-circle">
+                        <img src="{% static 'images/default-perfil.jpg' %}" alt="{{ usuario.username }}" style="object-fit: cover; width: 100%; height: 100%;" class="rounded-circle">
                         {% endif %}
                     </div>
                 <div class="d-flex" style="margin-left: 10px;">
-                    <a class="btn btn-light align-self-end" style="background-color: #fcefe5; font-weight:500;">Modificar</a>
+                    <label for="file-upload" class="btn btn-light align-self-end" style="background-color: #fcefe5; font-weight:500;">
+                        Modificar
+                    </label>
+                    <input type="file" id="file-upload" name="archivo" class="btn btn-light align-self-end" style="display: none;"/>
                 </div>
             </div>
 
