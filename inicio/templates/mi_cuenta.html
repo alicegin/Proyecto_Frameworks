@@ -1,34 +1,75 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="container d-block">
-    <div class="col-5">
-
-    </div>
-    <div class="col-7">
-        <div class="container">
-            <!--InfoGenerar de gusto viajero-->
-            <h1>Mi perfil</h1>
-        </div>
-        <div class="container">
-            <!--Foto-->
-            <div class="container">
-                {% if usuario.foto %}
-                <img src="{{usuario.foto.Imagen.url}}" class="rounded-5">
-                {% else %}
-                    <img src="{% static 'images/default-perfil.jpg' %}" alt="{{ usuario.USERNAME }}">
-                {% endif %}
+<div class="container d-flex justify-content-center" style="padding-top: 20px;">
+    <h1>Mi perfil</h1>
+</div>
+<form action="" method="POST">
+    {% csrf_token %}
+    <div class="container d-flex">
+        <div class="col-3 d-flex">
+            <div class="d-grid justify-content-center align-content-center">
+                <a href="{% url 'mis_restaurantes' %}" class="btn btn-light" style="display:flex; justify-content: left; height: 100px; font-weight: bold; background-color: transparent;">
+                    Mis restaurantes
+                </a>
+                <a href="" class="btn btn-light" style="display:flex; justify-content: left; height: 100px; font-weight: bold; background-color: transparent;">
+                    Mis reseñas
+                </a>
+                <a href="{% url 'cerrar_sesion' %}" class="btn btn-light" style="display:flex; justify-content: left; height: 100px; font-weight: bold; background-color: transparent;">
+                    Salir
+                </a>
             </div>
         </div>
-        <div class="container">
-            <!--Nombre y apellido de usuario-->
+        <div class="col-9">
+            {{error|safe}}
 
-        </div>
-        <div class="container">
-            <!--Nombre de usuario y correo-->
+            <div class="container">
+                <!--InfoGenerar de gusto viajero-->
+            </div>
+
+            <p style="margin: 0 0 0 0; font-weight:100;">Foto</p>
+            <div class="container d-flex">
+                <!--Foto-->
+                <div style="width: 130px; height: 130px;" >
+                        {% if foto %}
+                        <img src="{{foto.Imagen.url}}" style="object-fit: cover; width: 100%; height: 100%;">
+                        {% else %}
+                        <img src="{% static 'images/default-perfil.jpg' %}" alt="{{ usuario.username}}" style="object-fit: cover; width: 100%; height: 100%;" class="rounded-circle">
+                        {% endif %}
+                    </div>
+                <div class="d-flex" style="margin-left: 10px;">
+                    <a class="btn btn-light align-self-end" style="background-color: #fcefe5; font-weight:500;">Modificar</a>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 30px;">
+                <!--Nombre y apellido de usuario-->
+                <div class="col">
+                    <p style="margin: 0 0 0 0; font-weight:100;">Nombre</p>
+                    <input type="text" class="form-control text-center" placeholder="Nombre"  name="Nombre" value="{{usuario.first_name}}">
+                </div>
+                <div class="col">
+                    <p style="margin: 0 0 0 0; font-weight:100;">Apellido</p>
+                    <input type="text" class="form-control text-center" placeholder="Apellido" name="Apellido" value="{{usuario.last_name}}">
+                </div>
+
+            </div>
+            <div class="row" style="margin-top: 50px;">
+                <!--Nombre de usuario y correo-->
+                <div class="col">
+                    <p style="margin: 0 0 0 0; font-weight:100;">Nombre de usuario</p>
+                    <input type="text" class="form-control text-center" placeholder="Nombre de usuario"  name="Username" value="{{usuario.username}}">
+                </div>
+                <div class="col">
+                    <p style="margin: 0 0 0 0; font-weight:100;">Correo</p>
+                    <input type="text" class="form-control text-center" placeholder="Correo" name="Correo" value="{{usuario.email}}">
+                </div>
+            </div>
+            <div class="container d-lg-flex justify-content-center" style="padding: 20px 20px 20px 20px">
+                <button type="submit" class="btn btn-light" style="padding: 20px 20px 20px 20px">Guardar</button>
+            </div>
         </div>
 
     </div>
-
-</div>
+</form>
 {% endblock %}

@@ -6,8 +6,8 @@ from django.contrib.auth import login,logout, authenticate
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
-from .forms import RestauranteForm,FotosLugarForm
-from .models import Restaurante,FotosLugar
+from .forms import RestauranteForm,FotosLugarForm, FotoUsuarioForm
+from .models import Restaurante,FotosLugar,FotoUsuario
 # Create your views here.
 def inicio_sesion(request):
     if request.method == 'GET':
@@ -98,31 +98,32 @@ def eliminar_restaurante(request,pk):
             return redirect(request.META.get("HTTP_REFERER"))
 
 def editar_restaurante(request, pk):
-    restaurante = get_object_or_404(Restaurante, id=pk)
-
+    if request.user.is_authenticated:
+        restaurante=get_object_or_404(Restaurante,id=pk)
+        if request.user.username== restaurante.Propietario.username:
     # Obtener todas las fotos asociadas al restaurante
-    fotos = FotosLugar.objects.filter(RestauranteID=restaurante.id)
+            fotos = FotosLugar.objects.filter(RestauranteID=restaurante.id)
 
-    InfoForm = RestauranteForm(request.POST or None, instance=restaurante)
-    FotoForm = FotosLugarForm(request.POST or None, request.FILES or None)
+            InfoForm = RestauranteForm(request.POST or None, instance=restaurante)
+            FotoForm = FotosLugarForm(request.POST or None, request.FILES or None)
 
-    if request.method == 'POST':
-        if InfoForm.is_valid() and FotoForm.is_valid():
-            restaurante = InfoForm.save(commit=False)
-            restaurante.Propietario = request.user
-            restaurante.save()
+            if request.method == 'POST':
+                if InfoForm.is_valid() and FotoForm.is_valid():
+                    restaurante = InfoForm.save(commit=False)
+                    restaurante.Propietario = request.user
+                    restaurante.save()
 
-            # Eliminar fotos existentes del restaurante
-            #FotosLugar.objects.filter(RestauranteID=restaurante.id).delete()
+                    # Eliminar fotos existentes del restaurante
+                    #FotosLugar.objects.filter(RestauranteID=restaurante.id).delete()
 
-            # Guardar las nuevas fotos
-            for imagen in request.FILES.getlist('Imagen'):
-                FotosLugar.objects.create(RestauranteID=restaurante, Imagen=imagen)
+                    # Guardar las nuevas fotos
+                    for imagen in request.FILES.getlist('Imagen'):
+                        FotosLugar.objects.create(RestauranteID=restaurante, Imagen=imagen)
 
-            messages.success(request, "El restaurante fue actualizado")
-            return redirect('mis_restaurantes')
+                    messages.success(request, "El restaurante fue actualizado")
+                    return redirect('mis_restaurantes')
 
-    return render(request, "editar_restaurante.html", {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'restaurante': restaurante, 'fotos': fotos})
+            return render(request, "editar_restaurante.html", {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'restaurante': restaurante, 'fotos': fotos})
 
 def eliminar_imagen_res(request, pk):
     foto = get_object_or_404(FotosLugar, id=pk)
@@ -131,5 +132,29 @@ def eliminar_imagen_res(request, pk):
 
 def mi_cuenta(request):
     if request.user.is_authenticated:
-        usuario=User.objects.filter(username=request.user.username).prefetch_related('foto')
-        return render(request,"mi_cuenta.html")
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+
+        if request.method == 'GET':
+            return render(request, "mi_cuenta.html", {'usuario': usuario, 'foto': foto})
+        elif request.method == 'POST':
+            try:
+                usuario.first_name = request.POST['Nombre']
+                usuario.last_name = request.POST['Apellido']
+                usuario.username = request.POST['Username']
+                usuario.email = request.POST['Correo']
+                usuario.save()
+
+                # Manejar la foto si se está cargando una nueva
+                if 'imagen' in request.FILES:
+                    foto.imagen = request.FILES['imagen']
+                    foto.save()
+
+                return render(request, "mi_cuenta.html", {'usuario': usuario, 'foto': foto})
+            except IntegrityError:
+                return render(request, 'mi_cuenta.html', {
+                    'usuario': usuario, 'foto': foto,
+                    'error': '<div class="alert alert-danger" role="alert">El usuario ya existe. Intente con uno nuevo. </div>'
+                })
+
+        

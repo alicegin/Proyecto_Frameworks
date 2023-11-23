@@ -59,5 +59,5 @@ class FotosResena(models.Model):
     Imagen=models.ImageField(upload_to='uploads/resena', null=True, blank=True)
     
 class FotoUsuario(models.Model):
-    UsuarioID=models.ForeignKey(User, on_delete=models.CASCADE)
+    UsuarioID=models.OneToOneField(User, on_delete=models.CASCADE)
     Imagen=models.ImageField(upload_to='uploads/perfil', blank=True, null=True)

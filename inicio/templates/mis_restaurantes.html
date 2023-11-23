@@ -36,7 +36,7 @@
   }
 </style>
 
-<p class="h1">
+<p class="h1 d-flex justify-content-center">
     Mis restaurantes
 </p>
 {% if messages %}
@@ -45,8 +45,8 @@
         </div>
     {% endfor %}
 {% endif %}
-
-<div class="restaurantes-container">
+<div class="vh-50 d-flex flex-column justify-content-center align-items-center content-container">
+<div class="restaurantes-container" style="margin-top: 20px;">
     {% if Elementos %}
         {% for Elemento in Elementos %}
             <div class="restaurante-card restaurante">
@@ -81,5 +81,6 @@
             <a href="{% url 'crear_restaurante' %}" class="btn btn-light" style="color: #F27D16;">Crear restaurante</a>
         </div>
     {% endif %}
+</div>
 </div>
 {% endblock %}
