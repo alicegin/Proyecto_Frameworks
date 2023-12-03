@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .cuadro{
+            width: 15px;
+            height: 30px;
+            background-color: rgb(233, 232, 232);
+            cursor: pointer;
+        }
+
+        .derecha {
+            margin-right: 10px;
+        }
+</style>
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container text-center">
+        <div class="row align-items-start">
+          <div class="col-4">
+            <div class="row">
+              {{ FotoForm.Imagen.label_tag }}
+            </div>
+            <div class="row">
+              {{ FotoForm.management_form }}
+              <input type="file" name="{{ FotoForm.Imagen.name }}" id="{{ FotoForm.Imagen.id_for_label }}" multiple>
+            </div>
+            
+        </div>
+        <div class="col-8">
+            <div class="row" style="margin: 20px;">
+                {{ InfoForm.Puntuacion.label_tag }}
+                <div class="col d-flex align-self-center" >
+                    <div class="cuadro" onclick="cambiarTexto(0.5)"></div>
+                    <div class="cuadro derecha" onclick="cambiarTexto(1)"></div>
+                    <div class="cuadro" onclick="cambiarTexto(1.5)"></div>
+                    <div class="cuadro derecha" onclick="cambiarTexto(2)"></div>
+                    <div class="cuadro" onclick="cambiarTexto(2.5)"></div>
+                    <div class="cuadro derecha" onclick="cambiarTexto(3)"></div>
+                    <div class="cuadro" onclick="cambiarTexto(3.5)"></div>
+                    <div class="cuadro derecha" onclick="cambiarTexto(4)"></div>
+                    <div class="cuadro" onclick="cambiarTexto(4.5)"></div>
+                    <div class="cuadro derecha" onclick="cambiarTexto(5)"></div>
+                </div>
+                <div class="col d-flex align-content-center justify-content-center ">
+                    <input type="text" class="form-control"  name="Puntuacion" id="Input" disabled style="background-color: transparent; width: 47px;">
+                </div>
+            </div>
+            
+            <div class="row">
+                {{InfoForm.Descripcion.label_tag}}
+                {{InfoForm.Descripcion}}
+            </div>
+            <div class="row">
+                <div class="col">
+                <button type="submit" class="btn btn-light">Aceptar</button>
+                </div>
+                <div class="col">
+                  <a href="{% url 'elegir_restaurante' %}" class="btn btn-light" style="color: #F27D16;">Cancelar</a>
+                </div>
+              </div>
+
+
+            
+          </div>
+        </div>
+      </div>
+</form>
+
+<script>
+    function cambiarTexto(valor) {
+        document.getElementById("Input").value = valor;
+        colorearcuadro(valor);
+    }
+
+    function colorearcuadro(valor) {
+        var cuadros = document.getElementsByClassName("cuadro");
+        for (var i = 0; i < cuadros.length; i++) {
+            var cuadroValor = parseFloat(cuadros[i].getAttribute("onclick").match(/(\d+\.\d+|\d+)/)[0]);
+            if (cuadroValor <= valor) {
+                cuadros[i].style.backgroundColor = "#F27D16"; // Cambia el color a naranja
+            } else {
+                cuadros[i].style.backgroundColor = "lightgray"; // Restaura el color original
+            }
+        }
+    }
+</script>
+{% endblock %}

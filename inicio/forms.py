@@ -1,5 +1,5 @@
 from django import forms
-from .models import Restaurante, FotosLugar,TipoCocina,CategoriaL, FotoUsuario
+from .models import Restaurante, FotosLugar,TipoCocina,CategoriaL, FotoUsuario, FotosResena, Resena
 
 
 class RestauranteForm(forms.ModelForm):
@@ -25,4 +25,13 @@ class FotosLugarForm(forms.ModelForm):
 class FotoUsuarioForm(forms.ModelForm):
     class Meta:
         model=FotoUsuario
+        fields=['Imagen']
+
+class ResenaForm(forms.ModelForm):
+    class Meta:
+        model=Resena
+        fields={'Descripcion': forms.Textarea}
+class FotoResenaForm(forms.ModelForm):
+    class Meta:
+        model= FotosResena
         fields=['Imagen']

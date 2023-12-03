@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .restaurante {
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .restaurante:hover {
+        transform: scale(1.05);
+    }
+</style>
+{% if messages %}
+      {% for message in messages %}
+        <div{% if message.tags %} class="alert alert-info" role="alert"{% endif %}>{{ message }}
+        </div>
+
+      {% endfor %}
+  {% endif %}
+<div class="row" style="margin-top: 30px;">
+    <div class="col-2">
+        <p class="d-flex justify-content-center">espacio de busqueda</p>
+    </div>
+    <div class="col-10">
+        <div class="row">
+            <div class="container">
+                <p class="d-flex justify-content-center">Elige el restaurante que quieres calificar</p>
+                <div class="container d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Restaurante" aria-label="Search">
+                    <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="margin-top: 50px;">
+            {% if Elementos %}
+            <div class="row">
+                {% for Elemento in Elementos %}
+                <div class="col-4" style="background-color:#F27D16">
+                    <a href="{% url 'crear_resena' Elemento.id %}" style="text-decoration: none; color: inherit;">
+                        <div class="container restaurante" style="background-color: aliceblue; height: 100%;">
+                            <p class="d-flex justify-content-center"> {{Elemento.Nombre}}</p>
+                            <div style="width: 150px; height: 150px; overflow: hidden; margin: 0 auto; border: 1px solid #ccc;">
+                                {% if Elemento.fotoslugar_set.all %}
+                                    <img src="{{ Elemento.fotoslugar_set.all.0.Imagen.url }}" alt="{{ Elemento.Nombre }}" style="width: 100%; height: 100%; object-fit: contain;">
+                                {% else %}
+                                    <img src="{% static 'images/default.jpg' %}" alt="{{ Elemento.Nombre }}" style="width: 100%; height: 100%; object-fit: contain;">
+                                {% endif %}
+                            </div>
+                            <div class="container-fluid">
+                                <p class="d-flex justify-content-center">{{ Elemento.Pais }}, {{ Elemento.Estado }}</p>
+                                <p class="d-flex justify-content-center">{{ Elemento.Direccion }}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor%}
+            </div>
+        {% else %}
+        <div class="col-md-8 text-center">
+            <p>No existen restaurantes para hacer una reseña</p>
+            <a href="{% url 'crear_restaurante' %}" class="btn btn-light" style="color: #F27D16;">Crear restaurante</a>
+        </div>
+        {% endif%}
+    </div>
+</div>
+</div>
+{% endblock %}

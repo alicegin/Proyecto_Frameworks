@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout, authenticate
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
-from .forms import RestauranteForm,FotosLugarForm, FotoUsuarioForm
-from .models import Restaurante,FotosLugar,FotoUsuario
+from .forms import RestauranteForm,FotosLugarForm, FotoUsuarioForm, ResenaForm, FotoResenaForm
+from .models import Restaurante,FotosLugar,FotoUsuario, FotosResena, Resena
 # Create your views here.
 def inicio_sesion(request):
     if request.method == 'GET':
@@ -84,7 +85,7 @@ def crear_restaurante(request):
 
         return render(request, 'crear_restaurante.html', {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'submitted': submitted, 'usuario':usuario,'foto':foto})
     else:
-        # Manejar el caso en que el usuario no esté autenticado (puedes redirigirlo o mostrar un mensaje)
+        # Manejar el caso en que el usuario no esté autenticado 
         return render(request, 'error.html', {'mensaje': 'Acceso no autorizado'})
     
 def mis_restaurantes(request):
@@ -170,3 +171,41 @@ def mi_cuenta(request):
                     'usuario': usuario, 'foto': foto,
                     'error': '<div class="alert alert-danger" role="alert">El usuario ya existe. Intente con uno nuevo. </div>'
                 })
+def crear_resena(request, pk):
+    if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        restaurante=get_object_or_404(Restaurante,id=pk)
+        if request.user.username!= restaurante.Propietario.username:
+            if request.method == 'GET':
+                InfoForm = ResenaForm()
+                FotoForm = FotosResena()
+                return render(request, "crear_resena.html", {'usuario': usuario, 'foto': foto, 'FotoForm': FotoForm, 'InfoForm': InfoForm})
+            elif request.method == 'POST':
+                InfoForm = ResenaForm(request.POST)
+                FotoForm = FotoResenaForm(request.POST)
+                if InfoForm.is_valid() and FotoForm.is_valid():
+                        #informacion es reseña, pero se evita la palabra para tener malentendidos
+                        informacion = InfoForm.save(commit=False)
+                        informacion.Puntuacion= request.POST['Puntuacion']
+                        informacion.RestauranteID= restaurante
+                        informacion.UsuarioID = usuario
+                        informacion.Fecha= timezone.now()
+                        informacion.save()
+
+                        if 'Imagen' in request.FILES:
+                            for imagen in request.FILES.getlist('Imagen'):
+                                FotosResena.objects.create(ResenaID=informacion, Imagen=imagen)
+
+                        messages.success(request, "Se ha creado la reseña")
+                        return redirect('elegir_restaurante')
+        else:
+            messages.error(request,'No puedes hacer reseñas de tu propio restaurante')
+            return redirect(request.META.get("HTTP_REFERER"))
+
+def elegir_restaurante(request):
+    if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        Elementos=Restaurante.objects.all().exclude(Propietario=usuario).prefetch_related('fotoslugar_set')
+        return render (request, "elegir_restaurante.html",{'Elementos': Elementos, 'usuario':usuario,'foto':foto})

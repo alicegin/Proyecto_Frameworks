@@ -1,4 +1,8 @@
 from django.db import models
+from django.db.models import Avg
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 class Project (models.Model):
     name=models.CharField(max_length=50)
@@ -40,6 +44,14 @@ class Restaurante (models.Model):
         f" - Apertura: {self.Apertura}"
         f" - Cierre: {self.Cierre}"
         f" - Descripción: {self.Descripción}")
+    def calcular_promedio(self):
+        resenas = Resena.objects.filter(RestauranteID=self)
+        if resenas.exists():
+            promedio = resenas.aggregate(promedio=Avg('Puntuacion'))['promedio']
+            self.Promedio = round(promedio, 2)
+        else:
+            self.Promedio = 0
+
     
 class FotosLugar(models.Model):
     RestauranteID=models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True)
@@ -52,7 +64,13 @@ class Resena(models.Model):
     UsuarioID=models.ForeignKey(User,on_delete=models.CASCADE)
     Fecha=models.DateField()
     Descripcion=models.CharField(max_length=280)
-    Puntuacion=models.IntegerField()
+    Puntuacion=models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+@receiver(post_save, sender=Resena)
+def actualizar_promedio_restaurante(sender, instance, **kwargs):
+    restaurante = instance.RestauranteID
+    restaurante.calcular_promedio()
+    restaurante.save()
 
 class FotosResena(models.Model):
     ResenaID=models.ForeignKey(Resena,on_delete=models.CASCADE)
