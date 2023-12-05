@@ -44,7 +44,7 @@
                     <div class="cuadro derecha" onclick="cambiarTexto(5)"></div>
                 </div>
                 <div class="col d-flex align-content-center justify-content-center ">
-                    <input type="text" class="form-control"  name="Puntuacion" id="Input" readonly style="background-color: transparent; width: 47px;">
+                    <input type="text" class="form-control"  name="Puntuacion" id="Input" style="background-color: transparent; width: 47px;" value="{{resena.Puntuacion}}">
                 </div>
             </div>
             
@@ -69,6 +69,12 @@
 </form>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Obtén el valor inicial de Puntuacion
+        var valorInicial = parseFloat(document.getElementById("Input").value);
+        // Llama a colorearcuadro con el valor inicial
+        colorearcuadro(valorInicial);
+    });
     function cambiarTexto(valor) {
         document.getElementById("Input").value = valor;
         colorearcuadro(valor);

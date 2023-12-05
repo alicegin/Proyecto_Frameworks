@@ -65,6 +65,13 @@ class Resena(models.Model):
     Fecha=models.DateField()
     Descripcion=models.CharField(max_length=280)
     Puntuacion=models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    def __str__(self):
+        return (f"{self.RestauranteID.Nombre}"
+        f" - Usuario: {self.UsuarioID.username}" 
+        f" - Fecha: {self.Fecha}"
+        f" - Descripcion: {self.Descripcion}"
+        f" - Puntuacion: {self.Puntuacion}"
+        )
 
 @receiver(post_save, sender=Resena)
 def actualizar_promedio_restaurante(sender, instance, **kwargs):
@@ -75,6 +82,8 @@ def actualizar_promedio_restaurante(sender, instance, **kwargs):
 class FotosResena(models.Model):
     ResenaID=models.ForeignKey(Resena,on_delete=models.CASCADE)
     Imagen=models.ImageField(upload_to='uploads/resena', null=True, blank=True)
+    def __str__(self):
+        return self.ResenaID
     
 class FotoUsuario(models.Model):
     UsuarioID=models.OneToOneField(User, on_delete=models.CASCADE)

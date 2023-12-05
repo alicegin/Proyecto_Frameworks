@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .restaurante:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+    .cuadro{
+            width: 8px;
+            height: 16px;
+            background-color: rgb(233, 232, 232);
+        }
+
+        .derecha {
+            margin-right: 10px;
+        }
+    .rellenar{
+        background-color: #F27D16;
+    }
+</style>
+<div class="row" style="margin-top: 30px;">
+    <div class="col-2">
+        <p class="d-flex justify-content-center">espacio de busqueda</p>
+    </div>
+    <div class="col-10">
+        <div class="container">
+            <div class="row">
+                {% for restaurante in restaurantes %}
+                    <div class="col-4">
+                        <a href="{% url 'restaurante' restaurante.id %}"
+                         style="text-decoration: none; color: inherit;">
+                            <div class="container restaurante">
+                                <div class="container-fluid d-flex h3 justify-content-center">
+                                    {{restaurante.Nombre}}
+                                </div>
+                                <div class="col d-flex align-self-center" style="margin-bottom: 20px; margin-top: 20px;" >
+                                    <div class="cuadro {% if restaurante.Promedio >= 0.5 %} rellenar {% endif %}"></div>
+                                    <div class="cuadro derecha {% if restaurante.Promedio >= 1 %} rellenar {% endif %}"></div>
+                                    <div class="cuadro {% if restaurante.Promedio >= 1.5 %} rellenar {% endif %}"></div>
+                                    <div class="cuadro derecha {% if restaurante.Promedio >= 2 %} rellenar {% endif %}"></div>
+                                    <div class="cuadro {% if restaurante.Promedio >= 2.5 %} rellenar {% endif %}"></div>
+                                    <div class="cuadro derecha {% if restaurante.Promedio >= 3 %} rellenar {% endif %}"></div>
+                                    <div class="cuadro {% if restaurante.Promedio >= 3.5 %} rellenar {% endif %}"></div>
+                                    <div class="cuadro derecha {% if restaurante.Promedio >= 4 %} rellenar {% endif %}"></div>
+                                    <div class="cuadro {% if restaurante.Promedio >= 4.5 %} rellenar {% endif %}"></div>
+                                    <div class="cuadro derecha {% if restaurante.Promedio == 5 %} rellenar {% endif %}"></div>
+                                </div>
+                                <div style="width: 150px; height: 150px; overflow: hidden; margin: 0 auto; border: 1px solid #ccc;">
+                                    {% if restaurante.fotoslugar_set.all %}
+                                        <img src="{{ restaurante.fotoslugar_set.all.0.Imagen.url }}" alt="{{ restaurante.Nombre }}" style="width: 100%; height: 100%; object-fit: contain;">
+                                    {% else %}
+                                        <img src="{% static 'images/default.jpg' %}" alt="{{ restaurante.Nombre }}" style="width: 100%; height: 100%; object-fit: contain;">
+                                    {% endif %}
+                                </div>
+                                <div class="container-fluid">
+                                    <p>{{ restaurante.Nombre }}</p>
+                                    <p>{{ restaurante.Apertura }} - {{ restaurante.Cierre }}</p>
+                                    <p>{{ restaurante.Pais }}, {{ restaurante.Estado }}</p>
+                                    <p>{{ restaurante.Direccion }}</p>
+                                    {% if restaurante.CategoriaL %}
+                                        <p>{{ restaurante.CategoriaL }}</p>
+                                    {% endif %}
+                                    {% if restaurante.TipoCocina %}
+                                        <p>{{ restaurante.TipoCocina }}</p>
+                                    {% endif %}
+                                </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -14,6 +14,7 @@
 {% if messages %}
       {% for message in messages %}
         <div{% if message.tags %} class="alert alert-info" role="alert"{% endif %}>{{ message }}
+            <a href="{% url 'mis_resenas' %}" class="btn btn-light" style="color: #F27D16;">Ver mis reseñas</a>
         </div>
 
       {% endfor %}

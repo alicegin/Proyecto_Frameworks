@@ -34,7 +34,8 @@ def home(request):
     if request.user.is_authenticated:
         usuario = request.user
         foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
-        return render(request,'home.html',{'usuario':usuario,'foto':foto})
+        restaurantes=Restaurante.objects.all().prefetch_related('fotoslugar_set')
+        return render(request,'home.html',{'usuario':usuario,'foto':foto, 'restaurantes': restaurantes})
 
 def crear_cuenta(request):
     if request.method=='GET':
@@ -185,7 +186,7 @@ def crear_resena(request, pk):
                 InfoForm = ResenaForm(request.POST)
                 FotoForm = FotoResenaForm(request.POST)
                 if InfoForm.is_valid() and FotoForm.is_valid():
-                        #informacion es reseña, pero se evita la palabra para tener malentendidos
+                        
                         informacion = InfoForm.save(commit=False)
                         informacion.Puntuacion= request.POST['Puntuacion']
                         informacion.RestauranteID= restaurante
@@ -209,3 +210,74 @@ def elegir_restaurante(request):
         foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
         Elementos=Restaurante.objects.all().exclude(Propietario=usuario).prefetch_related('fotoslugar_set')
         return render (request, "elegir_restaurante.html",{'Elementos': Elementos, 'usuario':usuario,'foto':foto})
+
+def mis_resenas(request):
+    if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        resenas=Resena.objects.filter(UsuarioID=usuario).prefetch_related('fotosresena_set')
+        restaurantes = Restaurante.objects.filter(id__in=resenas.values('RestauranteID')).prefetch_related('fotoslugar_set')
+        return render(request, 'mis_resenas.html',{'usuario':usuario,'foto':foto, 'resenas': resenas, 'restaurantes': restaurantes})
+
+def eliminar_resena(request,pk):
+    if request.user.is_authenticated:
+        resena=get_object_or_404(Resena,id=pk)
+        if request.user.username== resena.UsuarioID.username:
+            resena.delete()
+            messages.success(request,"La reseña ha sido eliminada")
+            return redirect(request.META.get("HTTP_REFERER"))
+        else:
+            return redirect(request.META.get("HTTP_REFERER"))
+
+def editar_resena (request, pk):
+    if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        resena=get_object_or_404(Resena,id=pk)
+        restaurante = get_object_or_404(Restaurante, id=resena.RestauranteID.id)
+        if request.user.username== resena.UsuarioID.username:
+
+            fotos = FotosResena.objects.filter(ResenaID=resena.id)
+
+            InfoForm = ResenaForm(request.POST or None, instance=resena)
+            FotoForm = FotoResenaForm(request.POST or None, request.FILES or None)
+
+            if request.method == 'POST':
+                print(request.POST)
+                if InfoForm.is_valid() and FotoForm.is_valid():
+                    resena = InfoForm.save(commit=False)
+                    resena.Puntuacion= float(request.POST['Puntuacion'])
+                    resena.RestauranteID= restaurante
+                    resena.UsuarioID = usuario
+                    resena.Fecha= timezone.now()
+                    resena.save()
+
+                    # Eliminar fotos existentes del restaurante
+                    #FotosLugar.objects.filter(RestauranteID=restaurante.id).delete()
+
+                    # Guardar las nuevas fotos
+                    for imagen in request.FILES.getlist('Imagen'):
+                        FotosResena.objects.create(ResenaID=resena, Imagen=imagen)
+
+                    messages.success(request, "La resena fue actualizada")
+                    return redirect('mis_resenas')
+            else:
+                return render(request, "editar_resena.html", {'InfoForm': InfoForm, 'FotoForm': FotoForm, 'resena': resena, 'fotos': fotos,'usuario':usuario,'foto':foto})
+            
+def explorar(request):
+    if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        restaurantes = Restaurante.objects.all().prefetch_related('fotoslugar_set')
+    return render(request, "explorar.html",{'usuario':usuario,'foto': foto, 'restaurantes': restaurantes})
+
+def restaurante(request, pk):
+    if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        restaurante = Restaurante.objects.filter(id=pk).first()
+        fotoslugar = FotosLugar.objects.filter(RestauranteID=restaurante.id)
+        resenas=Resena.objects.filter(RestauranteID=restaurante)
+        foto_cresena = FotoUsuario.objects.filter(UsuarioID__in=resenas.values('UsuarioID')).first()
+        foto_creador=FotoUsuario.objects.filter(UsuarioID=restaurante.Propietario).first()
+    return render(request,'restaurante.html',{'usuario': usuario, 'foto': foto, 'resenas': resenas, 'restaurante': restaurante, 'foto_creador': foto_creador, 'fotoslugar': fotoslugar, 'foto_cresena': foto_cresena})

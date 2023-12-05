@@ -12,5 +12,10 @@ path('editarrestaurante/<int:pk>',views.editar_restaurante, name='editar_restaur
 path('eliminarimagen/<int:pk>',views.eliminar_imagen_res, name='eliminar_imagen_res'),
 path('micuenta/',views.mi_cuenta, name='mi_cuenta'),
 path('elegirrestaurante/',views.elegir_restaurante, name='elegir_restaurante'),
-path('crearresena/ <int:pk>',views.crear_resena, name='crear_resena')
+path('crearresena/ <int:pk>',views.crear_resena, name='crear_resena'),
+path('misresenas/',views.mis_resenas, name='mis_resenas'),
+path('eliminarresena/<int:pk>',views.eliminar_resena, name='eliminar_resena'),
+path('editarresena/<int:pk>',views.editar_resena, name='editar_resena'),
+path('explorar/',views.explorar, name='explorar'),
+path('restaurante/<int:pk>',views.restaurante, name='restaurante')
 ]
