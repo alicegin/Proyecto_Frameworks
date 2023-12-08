@@ -2,85 +2,100 @@
 {% load static %}
 {% block content %}
 <style>
-  .restaurante:hover {
-    transform: scale(1.05);
-    transition: transform 0.3s ease;
-  }
+    .restaurante {
+        transition: transform 0.3s ease;
+    }
 
-  .restaurantes-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    justify-content: center;
-  }
-
-  .restaurante-card {
-    background-color: bisque;
-    width: 100%;
-    height: auto;
-    padding: 10px;
-    position: relative;
-  }
-
-  .restaurante-card img {
-    width: 100%;
-    height: auto;
-  }
-
-  .restaurante-options {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    gap: 5px;
-  }
+    .restaurante:hover {
+        transform: scale(1.05);
+    }
+    
 </style>
 
-<p class="h1 d-flex justify-content-center">
-    Mis restaurantes
-</p>
 {% if messages %}
     {% for message in messages %}
         <div{% if message.tags %} class="alert alert-info" role="alert"{% endif %}>{{ message }}
         </div>
     {% endfor %}
 {% endif %}
-<div class="vh-50 d-flex flex-column justify-content-center align-items-center content-container">
-<div class="restaurantes-container" style="margin-top: 20px;">
-    {% if Elementos %}
-        {% for Elemento in Elementos %}
-            <div class="restaurante-card restaurante">
-                <a href="{% url 'editar_restaurante' Elemento.id %}" style="text-decoration: none; color: inherit;">
-                    <div class="restaurante-options">
-                        <a href="{% url 'eliminar_restaurante' Elemento.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
-                        <a href="{% url 'editar_restaurante' Elemento.id %}" class="btn btn-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
-                    </div>
-                    <div style="width: 100%; height: 150px; overflow: hidden; margin: 0 auto;">
-                        {% if Elemento.fotoslugar_set.all %}
-                            <img src="{{ Elemento.fotoslugar_set.all.0.Imagen.url }}" alt="{{ Elemento.Nombre }}">
-                        {% else %}
-                            <img src="{% static 'images/default.jpg' %}" alt="{{ Elemento.Nombre }}">
-                        {% endif %}
-                    </div>
-                    <p>{{ Elemento.Nombre }}</p>
-                    <p>{{ Elemento.Apertura }} - {{ Elemento.Cierre }}</p>
-                    <p>{{ Elemento.Pais }}, {{ Elemento.Estado }}</p>
-                    <p>{{ Elemento.Direccion }}</p>
-                    {% if Elemento.CategoriaL %}
-                        <p>{{ Elemento.CategoriaL }}</p>
-                    {% endif %}
-                    {% if Elemento.TipoCocina %}
-                        <p>{{ Elemento.TipoCocina }}</p>
-                    {% endif %}
-                </a>
+
+<div class="row" style="margin-top: 30px;">
+    <div class="col">
+        <div class="container" style="padding: 20px 20px 20px 20px;">
+            <div class="row">
+                <div class="container">
+                    <p class="d-flex justify-content-center h1"> Mis Restaurantes</p>
+                </div>
             </div>
-        {% endfor %}
-    {% else %}
-        <div class="col-md-8 text-center">
-            <p>No tienes restaurantes</p>
-            <a href="{% url 'crear_restaurante' %}" class="btn btn-light" style="color: #F27D16;">Crear restaurante</a>
+            {% if Elementos %}
+                <div class="row" style="margin-top: 50px; background-color: rgb(241, 239, 239); padding: 20px 20px 20px 20px; border-radius: 2%;">
+                    {% for Elemento in Elementos %}
+                    <div class="col-4" style="margin-top: 20px;">
+                        <div class="container restaurante" style="background-color: aliceblue; height: 100%; box-shadow: 10px 5px 5px rgb(108, 108, 108); padding: 7px 7px 7px 7px;">
+                            <div class="row">
+                                <div class=" col d-flex justify-content-start">
+                                    <a href="{% url 'eliminar_restaurante' Elemento.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+                                </div>
+                                <div class="col d-flex justify-content-end">
+                                    <a href="{% url 'editar_restaurante' Elemento.id %}" class="btn btn-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+                                </div>
+                            </div>
+                                    <div class="container-fluid d-flex h3 justify-content-center">
+                                        {{Elemento.Nombre}}
+                                    </div>
+                                    <div class="container-fluid d-flex h6 justify-content-center">
+                                        {% if Elemento.CategoriaL %}
+                                            {{ Elemento.CategoriaL }}
+                                        {% endif %}
+                                        {% if Elemento.TipoCocina %}
+                                            {{ Elemento.TipoCocina }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="col d-flex align-self-center" style="margin-bottom: 20px; margin-top: 20px;" >
+                                        <div class="cuadro {% if Elemento.Promedio >= 0.5 %} rellenar {% endif %}"></div>
+                                        <div class="cuadro derecha {% if Elemento.Promedio >= 1 %} rellenar {% endif %}"></div>
+                                        <div class="cuadro {% if Elemento.Promedio >= 1.5 %} rellenar {% endif %}"></div>
+                                        <div class="cuadro derecha {% if Elemento.Promedio >= 2 %} rellenar {% endif %}"></div>
+                                        <div class="cuadro {% if Elemento.Promedio >= 2.5 %} rellenar {% endif %}"></div>
+                                        <div class="cuadro derecha {% if Elemento.Promedio >= 3 %} rellenar {% endif %}"></div>
+                                        <div class="cuadro {% if Elemento.Promedio >= 3.5 %} rellenar {% endif %}"></div>
+                                        <div class="cuadro derecha {% if Elemento.Promedio >= 4 %} rellenar {% endif %}"></div>
+                                        <div class="cuadro {% if Elemento.Promedio >= 4.5 %} rellenar {% endif %}"></div>
+                                        <div class="cuadro derecha {% if Elemento.Promedio == 5 %} rellenar {% endif %}"></div>
+                                    </div>
+                                    <div style="width: 150px; height: 150px; overflow: hidden; margin: 0 auto; border: 1px solid #ccc;">
+                                        {% if Elemento.fotoslugar_set.all %}
+                                            <img src="{{ Elemento.fotoslugar_set.all.0.Imagen.url }}" alt="{{ Elemento.Nombre }}" style="width: 100%; height: 100%; object-fit: contain;">
+                                        {% else %}
+                                            <img src="{% static 'images/default.jpg' %}" alt="{{ Elemento.Nombre }}" style="width: 100%; height: 100%; object-fit: contain;">
+                                        {% endif %}
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="container-fluid d-flex justify-content-center">
+                                            <p>{{ Elemento.Apertura }} - {{ Elemento.Cierre }}</p>
+                                        </div>
+                                        <p>{{ Elemento.Pais }}, {{ Elemento.Estado }}</p>
+                                        <p>{{ Elemento.Direccion }}</p>
+                                        
+                                    </div>
+                                    <div class="d-grid">
+                                        <a href="{% url 'restaurante' Elemento.id %}" class="btn btn-dark">Ver</a>
+                                    </div>
+                                </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="container">
+                    <div class="d-flex justify-content-center">
+                        <p>No tienes restaurantes</p>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <a href="{% url 'crear_restaurante' %}" class="btn btn-light" style="color: #F27D16;">Crear restaurante</a>
+                    </div>
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
-</div>
+    </div>
 </div>
 {% endblock %}

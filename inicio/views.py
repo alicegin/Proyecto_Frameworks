@@ -142,6 +142,11 @@ def eliminar_imagen_res(request, pk):
     foto.delete()
     return redirect(request.META.get("HTTP_REFERER"))
 
+def eliminar_imagen_resena(request, pk):
+    foto = get_object_or_404(FotosResena, id=pk)
+    foto.delete()
+    return redirect(request.META.get("HTTP_REFERER"))
+
 def mi_cuenta(request):
     if request.user.is_authenticated:
         usuario = request.user
@@ -159,10 +164,10 @@ def mi_cuenta(request):
                 usuario.email = request.POST['Correo']
                 usuario.save()
 
-                # Manejar la foto si se está cargando una nueva
+                
                 if request.FILES.get('archivo'):
                     if foto is None:
-                        foto = FotoUsuario(UsuarioID=usuario)  # Crea un nuevo objeto si no existe
+                        foto = FotoUsuario(UsuarioID=usuario) 
                     foto.Imagen = request.FILES.get('archivo')
                     foto.save()
 
@@ -180,7 +185,7 @@ def crear_resena(request, pk):
         if request.user.username!= restaurante.Propietario.username:
             if request.method == 'GET':
                 InfoForm = ResenaForm()
-                FotoForm = FotosResena()
+                FotoForm = FotoResenaForm()
                 return render(request, "crear_resena.html", {'usuario': usuario, 'foto': foto, 'FotoForm': FotoForm, 'InfoForm': InfoForm})
             elif request.method == 'POST':
                 InfoForm = ResenaForm(request.POST)
@@ -193,6 +198,7 @@ def crear_resena(request, pk):
                         informacion.UsuarioID = usuario
                         informacion.Fecha= timezone.now()
                         informacion.save()
+                        
 
                         if 'Imagen' in request.FILES:
                             for imagen in request.FILES.getlist('Imagen'):
@@ -208,7 +214,7 @@ def elegir_restaurante(request):
     if request.user.is_authenticated:
         usuario = request.user
         foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
-        Elementos=Restaurante.objects.all().exclude(Propietario=usuario).prefetch_related('fotoslugar_set')
+        Elementos = Restaurante.objects.all().exclude(Propietario=usuario).prefetch_related('fotoslugar_set')
         TipoCocinas = []
         Paises = []
         Estados = []
@@ -233,6 +239,7 @@ def elegir_restaurante(request):
         pais = request.GET.get('filtro_pais')
         estado = request.GET.get('filtro_estado')
         categoria = request.GET.get('filtro_categoria')
+        query = request.GET.get('busca')
 
         if tipo_cocina:
             Elementos = Elementos.filter(TipoCocina__Nombre=tipo_cocina)
@@ -245,7 +252,20 @@ def elegir_restaurante(request):
 
         if categoria:
             Elementos = Elementos.filter(CategoriaL__Nombre=categoria)
-        return render (request, "elegir_restaurante.html",{'Elementos': Elementos, 'usuario':usuario,'foto':foto, 'TipoCocinas': TipoCocinas, 'Paises': Paises, 'Estados': Estados, 'Categorias': Categorias})
+
+        if query:
+            Elementos = Elementos.filter(Nombre__icontains=query)
+
+        return render(request, "elegir_restaurante.html", {
+            'Elementos': Elementos,
+            'usuario': usuario,
+            'foto': foto,
+            'TipoCocinas': TipoCocinas,
+            'Paises': Paises,
+            'Estados': Estados,
+            'Categorias': Categorias,
+            'query': query
+        })
 
 def mis_resenas(request):
     if request.user.is_authenticated:
@@ -379,3 +399,18 @@ def eliminar_todas_imagen_res(request,pk):
         fotos_res.delete()
         messages.info(request, 'Las fotos del restaurante han sido eliminadas')
         return redirect(request.META.get("HTTP_REFERER"))
+    
+def eliminar_todas_imagen_resena(request,pk):
+    if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        resena=get_object_or_404(Resena,id=pk)
+        fotos_res=FotosResena.objects.filter(ResenaID=resena)
+        fotos_res.delete()
+        messages.info(request, 'Las fotos de la reseña han sido eliminadas')
+        return redirect(request.META.get("HTTP_REFERER"))
+    
+def buscar_restaurantes(request):
+    query = request.GET.get('q', '')
+    restaurantes = Restaurante.objects.filter(Nombre__icontains=query)
+    return render(request, 'explorar.html', {'restaurantes': restaurantes, 'query': query})

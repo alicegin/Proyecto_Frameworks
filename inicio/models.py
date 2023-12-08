@@ -56,8 +56,6 @@ class Restaurante (models.Model):
 class FotosLugar(models.Model):
     RestauranteID=models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True)
     Imagen=models.ImageField(upload_to='uploads/lugar', blank=True, null=True)
-    def __str__(self):
-        return self.RestauranteID
 
 class Resena(models.Model):
     RestauranteID=models.ForeignKey(Restaurante,on_delete=models.CASCADE)
@@ -82,13 +80,8 @@ def actualizar_promedio_restaurante(sender, instance, **kwargs):
 class FotosResena(models.Model):
     ResenaID=models.ForeignKey(Resena,on_delete=models.CASCADE)
     Imagen=models.ImageField(upload_to='uploads/resena', null=True, blank=True)
-    def __str__(self):
-        return self.ResenaID
     
 class FotoUsuario(models.Model):
     UsuarioID=models.ForeignKey(User, on_delete=models.CASCADE)
     Imagen=models.ImageField(upload_to='uploads/perfil', blank=True, null=True)
-    def __str__(self):
-        return (f"{self.UsuarioID.username}"
-        f" - Imagen: {self.Imagen}" )
     

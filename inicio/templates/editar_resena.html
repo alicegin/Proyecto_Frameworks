@@ -16,33 +16,63 @@
 </style>
 <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="container text-center">
+    <div class="container text-center" style="margin-top: 20px;">
+        <div class="container d-flex justify-content-center" style="padding: 10px 10px 10px 10px; margin-bottom: 10px;">
+            <p class="h1">Edición de reseña</p>
+          </div>
         <div class="row align-items-start">
-          <div class="col-4">
-            <div class="row">
-              {{ FotoForm.Imagen.label_tag }}
-            </div>
-            <div class="row">
-              {{ FotoForm.management_form }}
-              <input type="file" name="{{ FotoForm.Imagen.name }}" id="{{ FotoForm.Imagen.id_for_label }}" multiple>
-            </div>
-            
-        </div>
-        <div class="col-8">
-            <div class="row" style="margin: 20px;">
-                {{ InfoForm.Puntuacion.label_tag }}
-                <div class="col d-flex align-self-center" >
-                    <div class="cuadro" onclick="cambiarTexto(0.5)"></div>
-                    <div class="cuadro derecha" onclick="cambiarTexto(1)"></div>
-                    <div class="cuadro" onclick="cambiarTexto(1.5)"></div>
-                    <div class="cuadro derecha" onclick="cambiarTexto(2)"></div>
-                    <div class="cuadro" onclick="cambiarTexto(2.5)"></div>
-                    <div class="cuadro derecha" onclick="cambiarTexto(3)"></div>
-                    <div class="cuadro" onclick="cambiarTexto(3.5)"></div>
-                    <div class="cuadro derecha" onclick="cambiarTexto(4)"></div>
-                    <div class="cuadro" onclick="cambiarTexto(4.5)"></div>
-                    <div class="cuadro derecha" onclick="cambiarTexto(5)"></div>
+            <div class="col-4">
+                <div class="row">
+                    {{ FotoForm.Imagen.label_tag }}
                 </div>
+                <div class="row">
+                    <input type="file" name="{{ FotoForm.Imagen.name }}" id="{{ FotoForm.Imagen.id_for_label }}" multiple>
+                </div>
+                <div class="container mt-4">
+                  <div class="row">
+                    {% if fotos %}  
+                        <div style="margin-top: 30px;">
+                            <p>Eliminar todas las imagenes</p> 
+                            <a href="{% url 'eliminar_todas_imagen_resena' resena.id%}" class="btn btn-danger d-grid" ><i class="fa-solid fa-trash"></i></a>
+                        </div>
+                        <div class="row" style="margin-top: 50px; background-color: rgb(241, 239, 239); padding: 20px 20px 20px 20px; border-radius: 2%;">
+                      {% for foto in fotos %}
+                          <div class="col-6" style="margin-top: 20px;">
+                            <div class="container restaurante" style="background-color: aliceblue; height: 100%; box-shadow: 10px 5px 5px rgb(108, 108, 108); padding: 7px 7px 7px 7px;">
+                                <div style="width: 120px; height: 120px; overflow: hidden; margin: 0 auto; border: 1px solid #ccc;">
+                                    <img src="{{ foto.Imagen.url }}" alt="Imagen de restaurante" class="img-fluid">
+                                </div>
+                                <a href="{% url 'eliminar_imagen_resena' foto.id%}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+                            </div>
+                          </div>
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                    <p>El restaurante no tiene fotos, inserte alguna</p>
+                    <div class="d-flex justify-content-center">
+                        <div style="width: 200px; height: 200px; object-fit: cover;" >
+                            <img src="{% static 'images/default.jpg' %}" style="width: 100%; height: 100%;">
+                        </div>
+                    </div>
+                    {% endif%}
+                  </div>
+              </div>
+            </div>
+            <div class="col-8">
+                    <div class="row" style="margin: 20px;">
+                    {{ InfoForm.Puntuacion.label_tag }}
+                    <div class="col d-flex align-self-center" >
+                        <div class="cuadro" onclick="cambiarTexto(0.5)"></div>
+                        <div class="cuadro derecha" onclick="cambiarTexto(1)"></div>
+                        <div class="cuadro" onclick="cambiarTexto(1.5)"></div>
+                        <div class="cuadro derecha" onclick="cambiarTexto(2)"></div>
+                        <div class="cuadro" onclick="cambiarTexto(2.5)"></div>
+                        <div class="cuadro derecha" onclick="cambiarTexto(3)"></div>
+                        <div class="cuadro" onclick="cambiarTexto(3.5)"></div>
+                        <div class="cuadro derecha" onclick="cambiarTexto(4)"></div>
+                        <div class="cuadro" onclick="cambiarTexto(4.5)"></div>
+                        <div class="cuadro derecha" onclick="cambiarTexto(5)"></div>
+                    </div>
                 <div class="col d-flex align-content-center justify-content-center ">
                     <input type="text" class="form-control"  name="Puntuacion" id="Input" style="background-color: transparent; width: 47px;" value="{{resena.Puntuacion}}">
                 </div>

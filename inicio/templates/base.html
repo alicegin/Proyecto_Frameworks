@@ -11,7 +11,7 @@
     <link href="css/style.css" rel="stylesheet">
     <style>
       .content-container {
-        max-width: 800px; /* Ajusta según sea necesario */
+        max-width: 800px;
         margin: auto;
       }
     </style>
@@ -19,7 +19,7 @@
   <body>
     <nav class="navbar navbar-expand-lg shadow" style="background-color: #8C634A;">
       <div class="container-fluid">
-        <a class="navbar-brand">GustoViajero!</a>
+        <a class="navbar-brand" href="{% url 'home' %}" style="color: white;">GustoViajero!</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
         aria-expanded="false" aria-label="Toggle navigation">
@@ -40,8 +40,8 @@
         </div>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Restaurante" aria-label="Search">
+          <form class="d-flex" action="{% url 'buscar_restaurantes' %}" method="GET">
+            <input class="form-control me-2" type="search" name="q" placeholder="Restaurante" aria-label="Search">
             <button class="btn btn-outline-light" type="submit">Buscar</button>
           </form>
           </ul>

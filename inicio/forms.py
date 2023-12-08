@@ -30,7 +30,8 @@ class FotoUsuarioForm(forms.ModelForm):
 class ResenaForm(forms.ModelForm):
     class Meta:
         model=Resena
-        fields={'Descripcion': forms.Textarea}
+        fields=('Descripcion',)
+        widgets={'Descripcion': forms.Textarea(attrs={'class': 'form-control'}),}
 class FotoResenaForm(forms.ModelForm):
     class Meta:
         model= FotosResena
