@@ -209,7 +209,43 @@ def elegir_restaurante(request):
         usuario = request.user
         foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
         Elementos=Restaurante.objects.all().exclude(Propietario=usuario).prefetch_related('fotoslugar_set')
-        return render (request, "elegir_restaurante.html",{'Elementos': Elementos, 'usuario':usuario,'foto':foto})
+        TipoCocinas = []
+        Paises = []
+        Estados = []
+        Categorias = []
+
+        for elemento in Elementos:
+            if elemento.TipoCocina:
+                TipoCocinas.append(elemento.TipoCocina)
+            if elemento.Pais:
+                Paises.append(elemento.Pais)
+            if elemento.Estado:
+                Estados.append(elemento.Estado)
+            if elemento.CategoriaL:
+                Categorias.append(elemento.CategoriaL)
+
+        TipoCocinas = list(set(TipoCocinas))
+        Paises = list(set(Paises))
+        Estados = list(set(Estados))
+        Categorias = list(set(Categorias))
+
+        tipo_cocina = request.GET.get('filtro_tipo_cocina')
+        pais = request.GET.get('filtro_pais')
+        estado = request.GET.get('filtro_estado')
+        categoria = request.GET.get('filtro_categoria')
+
+        if tipo_cocina:
+            Elementos = Elementos.filter(TipoCocina__Nombre=tipo_cocina)
+
+        if pais:
+            Elementos = Elementos.filter(Pais=pais)
+
+        if estado:
+            Elementos = Elementos.filter(Estado=estado)
+
+        if categoria:
+            Elementos = Elementos.filter(CategoriaL__Nombre=categoria)
+        return render (request, "elegir_restaurante.html",{'Elementos': Elementos, 'usuario':usuario,'foto':foto, 'TipoCocinas': TipoCocinas, 'Paises': Paises, 'Estados': Estados, 'Categorias': Categorias})
 
 def mis_resenas(request):
     if request.user.is_authenticated:
@@ -269,15 +305,77 @@ def explorar(request):
         usuario = request.user
         foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
         restaurantes = Restaurante.objects.all().prefetch_related('fotoslugar_set')
-    return render(request, "explorar.html",{'usuario':usuario,'foto': foto, 'restaurantes': restaurantes})
+        TipoCocinas = []
+        Paises = []
+        Estados = []
+        Categorias = []
+
+        for restaurante in restaurantes:
+            if restaurante.TipoCocina:
+                TipoCocinas.append(restaurante.TipoCocina)
+            if restaurante.Pais:
+                Paises.append(restaurante.Pais)
+            if restaurante.Estado:
+                Estados.append(restaurante.Estado)
+            if restaurante.CategoriaL:
+                Categorias.append(restaurante.CategoriaL)
+
+        TipoCocinas = list(set(TipoCocinas))
+        Paises = list(set(Paises))
+        Estados = list(set(Estados))
+        Categorias = list(set(Categorias))
+        
+        tipo_cocina = request.GET.get('filtro_tipo_cocina')
+        pais = request.GET.get('filtro_pais')
+        estado = request.GET.get('filtro_estado')
+        categoria = request.GET.get('filtro_categoria')
+
+        if tipo_cocina:
+            restaurantes = restaurantes.filter(TipoCocina__Nombre=tipo_cocina)
+
+        if pais:
+            restaurantes = restaurantes.filter(Pais=pais)
+
+        if estado:
+            restaurantes = restaurantes.filter(Estado=estado)
+
+        if categoria:
+            restaurantes = restaurantes.filter(CategoriaL__Nombre=categoria)
+
+        return render(request, "explorar.html", {'usuario': usuario, 'foto': foto, 'restaurantes': restaurantes, 'TipoCocinas': TipoCocinas, 'Paises': Paises, 'Estados': Estados, 'Categorias': Categorias})
+
 
 def restaurante(request, pk):
+    restaurante = get_object_or_404(Restaurante, id=pk)
+    
     if request.user.is_authenticated:
         usuario = request.user
         foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
-        restaurante = Restaurante.objects.filter(id=pk).first()
         fotoslugar = FotosLugar.objects.filter(RestauranteID=restaurante.id)
-        resenas=Resena.objects.filter(RestauranteID=restaurante)
-        foto_cresena = FotoUsuario.objects.filter(UsuarioID__in=resenas.values('UsuarioID')).first()
-        foto_creador=FotoUsuario.objects.filter(UsuarioID=restaurante.Propietario).first()
-    return render(request,'restaurante.html',{'usuario': usuario, 'foto': foto, 'resenas': resenas, 'restaurante': restaurante, 'foto_creador': foto_creador, 'fotoslugar': fotoslugar, 'foto_cresena': foto_cresena})
+        resenas = Resena.objects.filter(RestauranteID=restaurante).exclude(UsuarioID__isnull=True)
+        
+        fotos_cresena = FotoUsuario.objects.filter(UsuarioID__in=resenas.values('UsuarioID')).distinct()
+        
+        foto_creador = FotoUsuario.objects.filter(UsuarioID=restaurante.Propietario).first()
+
+        return render(request, 'restaurante.html', {
+            'usuario': usuario,
+            'foto': foto,
+            'resenas': resenas,
+            'restaurante': restaurante,
+            'foto_creador': foto_creador,
+            'fotoslugar': fotoslugar,
+            'foto_cresena': fotos_cresena
+        })
+
+    return render(request, 'restaurante.html', {'restaurante': restaurante})
+
+def eliminar_todas_imagen_res(request,pk):
+    if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        restaurante=get_object_or_404(Restaurante,id=pk)
+        fotos_res=FotosLugar.objects.filter(RestauranteID=restaurante)
+        fotos_res.delete()
+        messages.info(request, 'Las fotos del restaurante han sido eliminadas')
+        return redirect(request.META.get("HTTP_REFERER"))

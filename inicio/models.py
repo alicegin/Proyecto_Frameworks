@@ -86,5 +86,9 @@ class FotosResena(models.Model):
         return self.ResenaID
     
 class FotoUsuario(models.Model):
-    UsuarioID=models.OneToOneField(User, on_delete=models.CASCADE)
+    UsuarioID=models.ForeignKey(User, on_delete=models.CASCADE)
     Imagen=models.ImageField(upload_to='uploads/perfil', blank=True, null=True)
+    def __str__(self):
+        return (f"{self.UsuarioID.username}"
+        f" - Imagen: {self.Imagen}" )
+    

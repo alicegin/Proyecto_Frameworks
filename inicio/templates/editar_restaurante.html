@@ -22,7 +22,11 @@
                 </div>
                 <div class="container mt-4">
                   <div class="row">
-                    {% if fotos %}
+                    {% if fotos %}  
+                        <div>
+                            <p>Eliminar todas las imagenes</p> 
+                            <a href="{% url 'eliminar_todas_imagen_res' restaurante.id%}" class="btn btn-light" style="color: #F27D16;"><i class="fa-solid fa-trash"></i></a>
+                        </div>
                       {% for foto in fotos %}
                           <div class="col-3 mb-3">
                               <img src="{{ foto.Imagen.url }}" alt="Imagen de restaurante" class="img-fluid">

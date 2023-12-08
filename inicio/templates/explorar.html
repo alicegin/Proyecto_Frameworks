@@ -22,16 +22,110 @@
 </style>
 <div class="row" style="margin-top: 30px;">
     <div class="col-2">
-        <p class="d-flex justify-content-center">espacio de busqueda</p>
+        <div class="row">
+            <div class="container d-flex justify-content-center">
+                <p class="h4">Filtros</p>
+            </div>
+        </div>
+        <div class="row d-flex align-content-start" style="height: 100%;">
+
+            <div class="container d-flex justify-content-center">
+
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                          Tipo de comida
+                        </button>
+                      </h2>
+                      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            {% if TipoCocinas %}
+                                {% for tipo in TipoCocinas %}
+                                    <a href="?filtro_tipo_cocina={{ tipo }}"> {{ tipo }} </a>
+                                {% endfor %}
+                            {% else %}
+                                <p>No hay filtro por tipo de comida por el momento</p>
+                            {% endif %}
+                        </div>
+                      </div>
+                    </div>
+    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                            País
+                          </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                          <div class="accordion-body">
+                            {% if Paises %}
+                                {% for pais in Paises %}
+                                    <a href="?filtro_pais={{ pais }}"> {{ pais }} </a>
+                                {% endfor %}
+                            {% else %}
+                                <p> No hay filtro por tipo de país</p>
+                            {% endif %}
+                          </div>
+                        </div>
+                    </div>
+    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                            Estado
+                          </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                          <div class="accordion-body">
+                            {% if Estados %}
+                                {% for estado in Estados %}
+                                    <a href="?filtro_estado={{ estado }}"> {{ estado }} </a>
+                                {% endfor %}
+                            {% else %}
+                                <p> No hay filtro por Estado</p>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">
+                            Categoría
+                          </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                          <div class="accordion-body">
+                            {% if Categorias %}
+                                {% for categoria in Categorias %}
+                                    <a href="?filtro_categoria={{ categoria }}"> {{ categoria }} </a>
+                                {% endfor %}
+                            {% else %}
+                                <p> No hay filtro por Categoría</p>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </div>
+
+
+        </div>
     </div>
     <div class="col-10">
-        <div class="container">
+        <div class="container" style="padding: 20px 20px 20px 20px;">
             <div class="row">
+                <div class="container">
+                    <p class="d-flex justify-content-center h1">Restaurantes</p>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 50px; background-color: rgb(241, 239, 239); padding: 20px 20px 20px 20px; border-radius: 2%;">
                 {% for restaurante in restaurantes %}
-                    <div class="col-4">
+                    <div class="col-4" style="margin-top: 20px;">
                         <a href="{% url 'restaurante' restaurante.id %}"
                          style="text-decoration: none; color: inherit;">
-                            <div class="container restaurante">
+                            <div class="container restaurante" style="background-color: aliceblue; height: 100%; box-shadow: 10px 5px 5px rgb(108, 108, 108); padding: 7px 7px 7px 7px;">
                                 <div class="container-fluid d-flex h3 justify-content-center">
                                     {{restaurante.Nombre}}
                                 </div>

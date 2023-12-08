@@ -20,127 +20,171 @@
         background-color: #F27D16;
     }
 </style>
-<div class="row" style="margin-top: 20px;">
-    <!-- Creador -->
-    <div class="col">
-        <div class="container d-flex justify-content-center">
-            {% if foto_creador %}
-                <img src="{{foto_creador.Imagen.url}}" width="80" height="80" style="border-radius: 50%;">
-            {% else %}
-                <img src="{% static 'images/default-perfil.jpg' %}" width="80" height="80" style="border-radius: 50%;">
-            {% endif %}
-            <p class="align-self-center h5" style="margin-left: 20px;">{{ restaurante.Propietario }}</p>
+{% if messages %}
+      {% for message in messages %}
+        <div{% if message.tags %} class="alert alert-info" role="alert"{% endif %}>{{ message }}
         </div>
-    </div>
-    <div class="col">
-        <div class="container d-flex justify-content-center align-items-center h-100">
-            <p class="h1">{{ restaurante.Nombre }}</p>
-        </div>
-    </div>
-    <div class="col">
-        <div class="container d-flex justify-content-center align-items-center">
-            <a href="{% url 'crear_resena' restaurante.id %}" class="btn btn-secondary"><i class="fa-regular fa-pen-to-square"></i> Escribir una reseña</a>
-        </div>
-        <div class="container d-flex justify-content-center align-items-center">
-            <p class=" h5" style="margin-left: 20px;">{{ restaurante.Pais }}</p>
-        </div>
-        <div class="container d-flex justify-content-center align-items-center">
-            <p class=" h5" style="margin-left: 20px;">{{ restaurante.Estado }}</p>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col d-flex align-self-center justify-content-center" style="margin-bottom: 20px; margin-top: 20px;" >
-        <div class="cuadro {% if restaurante.Promedio >= 0.5 %} rellenar {% endif %}"></div>
-        <div class="cuadro derecha {% if restaurante.Promedio >= 1 %} rellenar {% endif %}"></div>
-        <div class="cuadro {% if restaurante.Promedio >= 1.5 %} rellenar {% endif %}"></div>
-        <div class="cuadro derecha {% if restaurante.Promedio >= 2 %} rellenar {% endif %}"></div>
-        <div class="cuadro {% if restaurante.Promedio >= 2.5 %} rellenar {% endif %}"></div>
-        <div class="cuadro derecha {% if restaurante.Promedio >= 3 %} rellenar {% endif %}"></div>
-        <div class="cuadro {% if restaurante.Promedio >= 3.5 %} rellenar {% endif %}"></div>
-        <div class="cuadro derecha {% if restaurante.Promedio >= 4 %} rellenar {% endif %}"></div>
-        <div class="cuadro {% if restaurante.Promedio >= 4.5 %} rellenar {% endif %}"></div>
-        <div class="cuadro derecha {% if restaurante.Promedio == 5 %} rellenar {% endif %}"></div>
-    </div>
-</div>
-<div class="row" style="margin-top: 20px;">
-    <!-- Detalles -->
-    <div class="col">
-        <div class="d-flex justify-content-center align-content-center">
-            <div>
-                <p class="h6">{{restaurante.Apertura}} - {{restaurante.Cierre}}</p>
-                    {% if restaurante.CategoriaL %}
-                        <p class="h6">{{ restaurante.CategoriaL }}</p>
-                    {% endif %}
-                    {% if restaurante.TipoCocina %}
-                        <p class="h6">{{ restaurante.TipoCocina }}</p>
-                    {% endif %}
+
+      {% endfor %}
+  {% endif %}
+<div class="container">
+    <div class="row" style="margin-top: 20px;">
+        <!-- Creador -->
+        <div class="col">
+            <div class="container d-flex justify-content-center">
+                {% if foto_creador %}
+                    <img src="{{foto_creador.Imagen.url}}" width="80" height="80" style="border-radius: 50%;">
+                {% else %}
+                    <img src="{% static 'images/default-perfil.jpg' %}" width="80" height="80" style="border-radius: 50%;">
+                {% endif %}
+                <p class="align-self-center h5" style="margin-left: 20px;">{{ restaurante.Propietario }}</p>
             </div>
         </div>
-    </div>
-    <div class="col">
-        <div class="container d-flex justify-content-center align-content-center">
-            <p>{{restaurante.Descripción}}</p>
+        <div class="col">
+            <div class="container d-flex justify-content-center align-items-center h-100">
+                <p class="h1">{{ restaurante.Nombre }}</p>
+            </div>
+        </div>
+        <div class="col">
+    
+            {% if usuario != restaurante.Propietario %}
+            <div class="container d-flex justify-content-center align-items-center">
+                <a href="{% url 'crear_resena' restaurante.id %}" class="btn btn-secondary"><i class="fa-regular fa-pen-to-square"></i> Escribir una reseña</a>
+            </div>
+    
+            {% else %}
+            <div class="container d-flex justify-content-center align-items-center">
+                <a href="{% url 'editar_restaurante' restaurante.id %}" class="btn btn-secondary"><i class="fa-regular fa-pen-to-square"></i> Editar mi restaurante</a>
+            </div>
+            {% endif %}
+
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-8" style="padding-left: 30px; background-color: #F27D16;">
-    <div class="container">
-        <div class="row">
-            {% if fotoslugar %}
-                {% for foto in fotoslugar %}
-                <div class="col-3">
-                    <div style="width: 150px; height: 150px; overflow: hidden; margin: 0 auto; border: 1px solid #ccc;">
-                        <img src="{{ foto.Imagen.url }}" style="width: 100%; height: 100%; object-fit: contain;">
+    <div class="row">
+        <div class="col d-flex align-self-center justify-content-center" style="margin-bottom: 20px; margin-top: 20px;" >
+            <div class="cuadro {% if restaurante.Promedio >= 0.5 %} rellenar {% endif %}"></div>
+            <div class="cuadro derecha {% if restaurante.Promedio >= 1 %} rellenar {% endif %}"></div>
+            <div class="cuadro {% if restaurante.Promedio >= 1.5 %} rellenar {% endif %}"></div>
+            <div class="cuadro derecha {% if restaurante.Promedio >= 2 %} rellenar {% endif %}"></div>
+            <div class="cuadro {% if restaurante.Promedio >= 2.5 %} rellenar {% endif %}"></div>
+            <div class="cuadro derecha {% if restaurante.Promedio >= 3 %} rellenar {% endif %}"></div>
+            <div class="cuadro {% if restaurante.Promedio >= 3.5 %} rellenar {% endif %}"></div>
+            <div class="cuadro derecha {% if restaurante.Promedio >= 4 %} rellenar {% endif %}"></div>
+            <div class="cuadro {% if restaurante.Promedio >= 4.5 %} rellenar {% endif %}"></div>
+            <div class="cuadro derecha {% if restaurante.Promedio == 5 %} rellenar {% endif %}"></div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 70px; margin-bottom: 40px; border-bottom: 1px solid rgb(165, 163, 163);">
+        <!-- Detalles -->
+        <div class="col">
+            <div class="row" style="padding: 10px 10px 40px 10px;">
+                <div class="col-5" style="border-right: 1px solid rgb(165, 163, 163);">
+                    <p class="h5">Ubicación</p>
+                    <div class="container d-flex justify-content-center align-items-center">
+                        <p>{{ restaurante.Pais }}, </p>
+                        <p>{{ restaurante.Estado }}</p>
+                    </div>
+                    <div class="container d-flex justify-content-center align-items-center">
+                        <p>{{ restaurante.Direccion }}</p>
                     </div>
                 </div>
-                {% endfor %}
-            {% else %}
-            <div style="width: 150px; height: 150px; overflow: hidden; margin: 0 auto; border: 1px solid #ccc;">
-                <img src="{% static 'images/default.jpg' %}" style="width: 100%; height: 100%; object-fit: contain;">
-            </div>
-            {% endif %}
-        </div>
-    </div>
-    </div>
-    <div class="col-4">
-        <div class="container">
-            {% if resenas %}
-                <div class="row-cols-1">
-                    {% for resena in resenas %}
-                        <div class="col" style="background-color:aqua">
-                            <div class="row">
-                                <div class="col d-flex justify-content-start" style="margin-left: 60px; margin-top: 13px;">
-                                    <img src="{{foto_cresena.Imagen.url}}" width="50" height="50" style="border-radius: 50%;">
-                                    <p class="h6 align-self-center" style="padding-left:10px;">{{resena.UsuarioID}}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col d-flex align-self-center justify-content-start" style="margin-left: 40px; margin-top: 10px;">
-                                    <div class="cuadrop {% if resena.Puntuacion >= 0.5 %} rellenar {% endif %}"></div>
-                                    <div class="cuadrop derecha {% if resena.Puntuacion >= 1 %} rellenar {% endif %}"></div>
-                                    <div class="cuadrop {% if resena.Puntuacion >= 1.5 %} rellenar {% endif %}"></div>
-                                    <div class="cuadrop derecha {% if resena.Puntuacion >= 2 %} rellenar {% endif %}"></div>
-                                    <div class="cuadrop {% if resena.Puntuacion >= 2.5 %} rellenar {% endif %}"></div>
-                                    <div class="cuadrop derecha {% if resena.Puntuacion >= 3 %} rellenar {% endif %}"></div>
-                                    <div class="cuadrop {% if resena.Puntuacion >= 3.5 %} rellenar {% endif %}"></div>
-                                    <div class="cuadrop derecha {% if resena.Puntuacion >= 4 %} rellenar {% endif %}"></div>
-                                    <div class="cuadrop {% if resena.Puntuacion >= 4.5 %} rellenar {% endif %}"></div>
-                                    <div class="cuadrop derecha {% if resena.Puntuacion == 5 %} rellenar {% endif %}"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="container d-flex justify-content-center" style="margin-top: 20px;">
-                                    <p>{{resena.Descripcion}}</p>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+                <div class="col-4" style="border-right: 1px solid rgb(165, 163, 163);">
+                    <p class="h5">Horario</p>
+                    <div class="container d-flex justify-content-center align-items-center">
+                        <p class="h6">{{restaurante.Apertura}} - {{restaurante.Cierre}}</p>
+                    </div>
                 </div>
-            {% else %}
-            {% endif %}
+                <div class="col-3" style="border-right: 1px solid rgb(165, 163, 163);">
+                    {% if restaurante.CategoriaL %}
+                        <p class="h5">{{ restaurante.CategoriaL }}</p>
+                    {% endif %}
+                    {% if restaurante.TipoCocina %}
+                        <p class="h5">{{ restaurante.TipoCocina }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+                {% if restaurante.Descripción %}
+                <p class="h5">Descripción</p>
+                <div class="container d-flex justify-content-center align-items-center">
+                    <p>{{restaurante.Descripción}}</p>
+                </div>
+                {% endif %}
         </div>
     </div>
+    <div class="row">
+        <div class="col-8" style="padding-left: 30px; background-color: rgb(241, 239, 239); border-radius: 5%;">
+        <div class="container">
+            <div class="row" style="margin-bottom: 10px;">
+                {% if fotoslugar %}
+                    {% for foto in fotoslugar %}
+                    <div class="col" style="margin-top: 10px;">
+                        <div style="width: 200px; height: 200px; overflow: hidden; margin: 0 auto; border: 1px solid #ccc; box-shadow: 10px 5px 5px rgb(108, 108, 108);">
+                            <img src="{{ foto.Imagen.url }}" style="width: 100%; height: 100%; object-fit: contain;">
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div style="width: 200px; height: 200px; overflow: hidden; margin: 0 auto; border: 1px solid #ccc;  box-shadow: 10px 5px 5px rgb(108, 108, 108);">
+                    <img src="{% static 'images/default.jpg' %}" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        </div>
+        <div class="col-4">
+            {% if resenas %}
+                <div class="container" style="background-color: rgb(241, 239, 239); border-radius: 5%; padding-left: 20px; padding-right: 20px; padding-bottom: 20px;">
+                    <div class="row-cols-1">
+                        {% for resena in resenas %}
+                        <div class="col" style="padding-top: 15px;">
+                            <div class="container" style="border-radius: 3%;  box-shadow: 10px 5px 5px rgb(108, 108, 108); background-color: rgb(250, 246, 246)">
+                                <div class="row">
+                                    <div class="col d-flex justify-content-start" style="margin-top: 13px;">
+                                        {% if resena.UsuarioID.fotousuario_set.exists %}
+                                            <img src="{{ resena.UsuarioID.fotousuario_set.first.Imagen.url }}" width="40" height="40" style="border-radius: 50%;">
+                                        {% else %}
+                                            <img src="{% static 'images/default-perfil.jpg' %}" width="40" height="40" style="border-radius: 50%;">
+                                        {% endif %}
+                                        <p class="h6 align-self-center" style="padding-left:10px;">{{resena.UsuarioID}}</p>
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+                                        <div>
+                                        {% if resena.UsuarioID == usuario %}
+                                            <a href="{% url 'eliminar_resena' resena.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+                                            <a href="{% url 'editar_resena' resena.id %}" class="btn btn-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col d-flex align-self-center justify-content-start" style="margin-left: 40px; margin-top: 10px;">
+                                        <div class="cuadrop {% if resena.Puntuacion >= 0.5 %} rellenar {% endif %}"></div>
+                                        <div class="cuadrop derecha {% if resena.Puntuacion >= 1 %} rellenar {% endif %}"></div>
+                                        <div class="cuadrop {% if resena.Puntuacion >= 1.5 %} rellenar {% endif %}"></div>
+                                        <div class="cuadrop derecha {% if resena.Puntuacion >= 2 %} rellenar {% endif %}"></div>
+                                        <div class="cuadrop {% if resena.Puntuacion >= 2.5 %} rellenar {% endif %}"></div>
+                                        <div class="cuadrop derecha {% if resena.Puntuacion >= 3 %} rellenar {% endif %}"></div>
+                                        <div class="cuadrop {% if resena.Puntuacion >= 3.5 %} rellenar {% endif %}"></div>
+                                        <div class="cuadrop derecha {% if resena.Puntuacion >= 4 %} rellenar {% endif %}"></div>
+                                        <div class="cuadrop {% if resena.Puntuacion >= 4.5 %} rellenar {% endif %}"></div>
+                                        <div class="cuadrop derecha {% if resena.Puntuacion == 5 %} rellenar {% endif %}"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="container d-flex justify-content-center" style="margin-top: 20px;">
+                                        <p>{{resena.Descripcion}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
 </div>
-{% endblock %}

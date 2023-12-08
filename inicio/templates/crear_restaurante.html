@@ -10,7 +10,10 @@
   {% endif %}
 <form action="" method="POST" enctype="multipart/form-data">
 {% csrf_token %}
-  <div class="container text-center">
+  <div class="container text-center" style="margin-top: 20px;">
+    <div class="container d-flex justify-content-center" style="padding: 10px 10px 10px 10px; margin-bottom: 10px;">
+      <p class="h1">Crea un nuevo restaurante</p>
+    </div>
       <div class="row align-items-start">
         <div class="col-4">
           <div class="row">
@@ -26,7 +29,7 @@
         </div>
         <div class="col-8">
           <div class="row">
-            <div class="col-9">
+            <div class="col">
               {{InfoForm.Nombre.label_tag}}
               {{InfoForm.Nombre}}
             </div>

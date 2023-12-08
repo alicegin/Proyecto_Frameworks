@@ -17,5 +17,6 @@ path('misresenas/',views.mis_resenas, name='mis_resenas'),
 path('eliminarresena/<int:pk>',views.eliminar_resena, name='eliminar_resena'),
 path('editarresena/<int:pk>',views.editar_resena, name='editar_resena'),
 path('explorar/',views.explorar, name='explorar'),
-path('restaurante/<int:pk>',views.restaurante, name='restaurante')
+path('restaurante/<int:pk>',views.restaurante, name='restaurante'),
+path('eliminartodasimg/<int:pk>',views.eliminar_todas_imagen_res, name='eliminar_todas_imagen_res')
 ]
