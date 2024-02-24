@@ -44,11 +44,17 @@ def crear_cuenta(request):
         })
     else:
         try:
-            usuario=User.objects.create_user(username=request.POST['Usuario'],password=request.POST['Contrasena'], 
-            email=request.POST['Correo'])
-            usuario.save()
-            login(request,usuario)
-            return redirect('home')
+            if request.POST['Contrasena'] == "" or request.POST['Usuario'] == "" or request.POST['Correo'] == "":
+                return render(request, 'crear_cuenta.html', {
+                    'form': UserCreationForm,
+                    'error': '<div class="alert alert-danger" role="alert">Ningún campo puede estar vacía</div>'
+                })
+            else:
+                usuario=User.objects.create_user(username=request.POST['Usuario'],password=request.POST['Contrasena'], 
+                email=request.POST['Correo'])
+                usuario.save()
+                login(request,usuario)
+                return redirect('home')
         except IntegrityError:
             return render(request, 'crear_cuenta.html', {
             'form': UserCreationForm,
@@ -411,6 +417,54 @@ def eliminar_todas_imagen_resena(request,pk):
         return redirect(request.META.get("HTTP_REFERER"))
     
 def buscar_restaurantes(request):
-    query = request.GET.get('q', '')
-    restaurantes = Restaurante.objects.filter(Nombre__icontains=query)
-    return render(request, 'explorar.html', {'restaurantes': restaurantes, 'query': query})
+     if request.user.is_authenticated:
+        usuario = request.user
+        foto = FotoUsuario.objects.filter(UsuarioID=usuario).first()
+        query = request.GET.get('q', '')
+        restaurantes = Restaurante.objects.filter(Nombre__icontains=query)
+        TipoCocinas = []
+        Paises = []
+        Estados = []
+        Categorias = []
+
+        for restaurante in restaurantes:
+            if restaurante.TipoCocina:
+                TipoCocinas.append(restaurante.TipoCocina)
+            if restaurante.Pais:
+                Paises.append(restaurante.Pais)
+            if restaurante.Estado:
+                Estados.append(restaurante.Estado)
+            if restaurante.CategoriaL:
+                Categorias.append(restaurante.CategoriaL)
+
+        TipoCocinas = list(set(TipoCocinas))
+        Paises = list(set(Paises))
+        Estados = list(set(Estados))
+        Categorias = list(set(Categorias))
+
+        tipo_cocina = request.GET.get('filtro_tipo_cocina')
+        pais = request.GET.get('filtro_pais')
+        estado = request.GET.get('filtro_estado')
+        categoria = request.GET.get('filtro_categoria')
+
+        if tipo_cocina:
+            restaurantes = restaurantes.filter(TipoCocina__Nombre=tipo_cocina)
+
+        if pais:
+            restaurantes = restaurantes.filter(Pais=pais)
+
+        if estado:
+            restaurantes = restaurantes.filter(Estado=estado)
+
+        if categoria:
+            restaurantes = restaurantes.filter(CategoriaL__Nombre=categoria)
+
+        return render(request, 'explorar.html', {'restaurantes': restaurantes, 
+        'query': query,
+        'usuario': usuario,
+        'foto': foto,
+        'TipoCocinas': TipoCocinas,
+        'Paises': Paises,
+        'Estados': Estados,
+        'Categorias': Categorias
+        })
